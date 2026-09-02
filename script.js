@@ -12,7 +12,18 @@ const publicationDetails = [...document.querySelectorAll('[data-publication-acco
 
 let activeMode = 'marketer';
 let touchStartX = 0;
+let touchStartY = 0;
+let touchStartPercentage = 100;
+let didSwipePortrait = false;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+function getPortraitReveal() {
+  if (!hero) return activeMode === 'marketer' ? 100 : 0;
+
+  const inlineValue = Number.parseFloat(hero.style.getPropertyValue('--portrait-reveal'));
+  if (Number.isFinite(inlineValue)) return inlineValue;
+  return activeMode === 'marketer' ? 100 : 0;
+}
 
 function setMode(mode, announce = false) {
   if (!hero || !['marketer', 'designer'].includes(mode)) return;
@@ -48,7 +59,7 @@ function setBlend(marketerPercentage, announce = false) {
       ? boundedPercentage / 100
       : (100 - boundedPercentage) / 100;
     button.setAttribute('aria-pressed', 'false');
-    button.style.opacity = String(.12 + strength * .88);
+    button.style.opacity = String(strength);
   });
 
   if (modeLabel) modeLabel.textContent = 'Marketer / Designer';
@@ -83,15 +94,55 @@ if (portrait) {
 
   portrait.addEventListener('touchstart', (event) => {
     touchStartX = event.changedTouches[0].clientX;
+    touchStartY = event.changedTouches[0].clientY;
+    touchStartPercentage = getPortraitReveal();
+    didSwipePortrait = false;
+    hero.dataset.swiping = 'true';
   }, { passive: true });
+
+  portrait.addEventListener('touchmove', (event) => {
+    const touch = event.changedTouches[0];
+    const distanceX = touch.clientX - touchStartX;
+    const distanceY = touch.clientY - touchStartY;
+
+    if (Math.abs(distanceX) <= Math.abs(distanceY) || Math.abs(distanceX) < 4) return;
+
+    didSwipePortrait = true;
+    event.preventDefault();
+
+    const bounds = portrait.getBoundingClientRect();
+    const reveal = touchStartPercentage + (distanceX / bounds.width) * 100;
+    setBlend(reveal);
+  }, { passive: false });
 
   portrait.addEventListener('touchend', (event) => {
     const distance = event.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(distance) < 36) return;
-    setMode(distance < 0 ? 'designer' : 'marketer', true);
+    delete hero.dataset.swiping;
+
+    if (!didSwipePortrait) return;
+    event.preventDefault();
+
+    if (Math.abs(distance) >= 36) {
+      setMode(distance < 0 ? 'designer' : 'marketer', true);
+      return;
+    }
+
+    setMode(getPortraitReveal() >= 50 ? 'marketer' : 'designer', true);
+  }, { passive: false });
+
+  portrait.addEventListener('touchcancel', () => {
+    delete hero.dataset.swiping;
+    if (didSwipePortrait) {
+      setMode(getPortraitReveal() >= 50 ? 'marketer' : 'designer');
+    }
   }, { passive: true });
 
   portrait.addEventListener('click', () => {
+    if (didSwipePortrait) {
+      didSwipePortrait = false;
+      return;
+    }
+
     if (!finePointer.matches) {
       setMode(activeMode === 'marketer' ? 'designer' : 'marketer', true);
     }
