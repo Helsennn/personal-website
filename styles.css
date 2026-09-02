@@ -218,10 +218,11 @@ img {
   --designer-strength: .5;
   min-height: calc(100svh - 4.5rem);
   padding: clamp(2.5rem, 8vw, 6rem) var(--page-pad) 1.5rem;
-  transition: --portrait-reveal 120ms linear;
+  transition: --portrait-reveal .52s var(--ease);
 }
 
-.hero[data-swiping="true"] {
+.hero[data-swiping="true"],
+.hero[data-tracking="true"] {
   transition: none;
 }
 
@@ -354,14 +355,15 @@ h2 em {
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%);
-  transition: left 120ms linear, opacity .25s ease;
+  transition: opacity .28s ease;
 }
 
 .hero[data-mode="blend"] .portrait-stage::after {
   opacity: 1;
 }
 
-.hero[data-swiping="true"] .portrait-stage::after {
+.hero[data-swiping="true"] .portrait-stage::after,
+.hero[data-tracking="true"] .portrait-stage::after {
   transition: none;
 }
 
@@ -449,7 +451,12 @@ h2 em {
   background: transparent;
   text-align: left;
   cursor: pointer;
-  transition: opacity .3s ease, border-color .3s ease;
+  transition: opacity .46s var(--ease), border-color .38s ease;
+}
+
+.hero[data-swiping="true"] .identity,
+.hero[data-tracking="true"] .identity {
+  transition: none;
 }
 
 .identity--marketer {

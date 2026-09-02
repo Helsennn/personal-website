@@ -14,30 +14,49 @@ let activeMode = 'marketer';
 let touchStartX = 0;
 let touchStartY = 0;
 let touchStartPercentage = 100;
+let touchStartTime = 0;
 let didSwipePortrait = false;
+let modeSettleTimer;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const modeSettleDuration = reduceMotion ? 0 : 520;
 
 function getPortraitReveal() {
   if (!hero) return activeMode === 'marketer' ? 100 : 0;
 
-  const inlineValue = Number.parseFloat(hero.style.getPropertyValue('--portrait-reveal'));
-  if (Number.isFinite(inlineValue)) return inlineValue;
+  const computedValue = Number.parseFloat(
+    window.getComputedStyle(hero).getPropertyValue('--portrait-reveal')
+  );
+  if (Number.isFinite(computedValue)) return computedValue;
   return activeMode === 'marketer' ? 100 : 0;
 }
 
 function setMode(mode, announce = false) {
   if (!hero || !['marketer', 'designer'].includes(mode)) return;
 
+  window.clearTimeout(modeSettleTimer);
   activeMode = mode;
-  hero.dataset.mode = mode;
+  hero.dataset.mode = 'blend';
   hero.style.setProperty('--portrait-reveal', mode === 'marketer' ? '100%' : '0%');
   hero.style.setProperty('--marketer-strength', mode === 'marketer' ? '1' : '0');
   hero.style.setProperty('--designer-strength', mode === 'designer' ? '1' : '0');
 
   identityButtons.forEach((button) => {
-    button.setAttribute('aria-pressed', String(button.dataset.identity === mode));
-    button.style.removeProperty('opacity');
+    const isSelected = button.dataset.identity === mode;
+    button.setAttribute('aria-pressed', String(isSelected));
+    button.style.opacity = isSelected ? '1' : '0';
   });
+
+  const finishMode = () => {
+    hero.dataset.mode = mode;
+    identityButtons.forEach((button) => button.style.removeProperty('opacity'));
+  };
+
+  if (modeSettleDuration === 0) {
+    finishMode();
+  } else {
+    modeSettleTimer = window.setTimeout(finishMode, modeSettleDuration);
+  }
 
   const readableMode = mode === 'marketer' ? 'Marketer' : 'Designer';
   if (modeLabel) modeLabel.textContent = readableMode;
@@ -47,6 +66,7 @@ function setMode(mode, announce = false) {
 function setBlend(marketerPercentage, announce = false) {
   if (!hero) return;
 
+  window.clearTimeout(modeSettleTimer);
   const boundedPercentage = Math.min(100, Math.max(0, marketerPercentage));
   activeMode = boundedPercentage >= 50 ? 'marketer' : 'designer';
   hero.dataset.mode = 'blend';
@@ -79,12 +99,16 @@ identityButtons.forEach((button) => {
 if (portrait) {
   if (finePointer.matches) {
     portrait.addEventListener('pointermove', (event) => {
+      hero.dataset.tracking = 'true';
       const bounds = portrait.getBoundingClientRect();
       const pointerPosition = (event.clientX - bounds.left) / bounds.width;
       setBlend((1 - pointerPosition) * 100);
     });
 
-    portrait.addEventListener('pointerleave', () => setBlend(50));
+    portrait.addEventListener('pointerleave', () => {
+      delete hero.dataset.tracking;
+      setBlend(50);
+    });
   }
 
   portrait.addEventListener('keydown', (event) => {
@@ -96,6 +120,7 @@ if (portrait) {
     touchStartX = event.changedTouches[0].clientX;
     touchStartY = event.changedTouches[0].clientY;
     touchStartPercentage = getPortraitReveal();
+    touchStartTime = performance.now();
     didSwipePortrait = false;
     hero.dataset.swiping = 'true';
   }, { passive: true });
@@ -117,12 +142,14 @@ if (portrait) {
 
   portrait.addEventListener('touchend', (event) => {
     const distance = event.changedTouches[0].clientX - touchStartX;
+    const duration = Math.max(1, performance.now() - touchStartTime);
     delete hero.dataset.swiping;
 
     if (!didSwipePortrait) return;
     event.preventDefault();
 
-    if (Math.abs(distance) >= 36) {
+    const isFlick = Math.abs(distance) >= 28 && (Math.abs(distance) / duration) > .45;
+    if (isFlick) {
       setMode(distance < 0 ? 'designer' : 'marketer', true);
       return;
     }
@@ -149,11 +176,7 @@ if (portrait) {
   });
 }
 
-if (finePointer.matches) {
-  setBlend(50);
-} else {
-  setMode('marketer');
-}
+setBlend(50);
 
 if (kineticTitle && finePointer.matches) {
   kineticTitle.addEventListener('pointermove', (event) => {
@@ -223,7 +246,6 @@ if (menuToggle && nav) {
 }
 
 const reveals = document.querySelectorAll('.reveal');
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if ('IntersectionObserver' in window && !reduceMotion) {
   const revealObserver = new IntersectionObserver((entries, observer) => {
