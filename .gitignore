@@ -1,0 +1,11 @@
+.DS_Store
+
+# Previous resume artifacts are kept locally but should not ship with the website.
+*.docx
+_qa_resume/
+_qa_resume_v2/
+build_resume.py
+WEBSITE_CONTENT_AND_DIRECTION.md
+
+# Keep web-optimized JPG portraits in Git; ignore large source PNGs.
+assets/images/*.png
