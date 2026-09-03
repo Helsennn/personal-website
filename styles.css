@@ -367,8 +367,8 @@ h2 em {
 
 .depth-field {
   z-index: 0;
-  inset: 16% -4% 3%;
-  overflow: hidden;
+  inset: 13% -7% 2%;
+  overflow: visible;
   transform: translate3d(calc(var(--stage-x) * -.16), calc(var(--stage-y) * -.16), -80px);
   transform-style: preserve-3d;
 }
@@ -382,32 +382,41 @@ h2 em {
 }
 
 .depth-halo {
-  top: 12%;
+  top: 10%;
   left: 50%;
-  width: min(76vw, 26rem);
+  width: min(80vw, 28rem);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 42%, rgba(251, 250, 246, .95) 0 28%, rgba(212, 202, 184, .2) 56%, transparent 73%);
-  filter: blur(1px);
+  background:
+    radial-gradient(circle at 50% 44%, rgba(251, 250, 246, .98) 0 29%, rgba(217, 208, 191, .2) 52%, transparent 72%);
+  filter: blur(2px);
+  opacity: .82;
   transform: translateX(-50%);
 }
 
 .depth-loop {
-  top: 16%;
+  top: 13%;
   left: 50%;
-  width: min(85vw, 30rem);
-  aspect-ratio: 1.25;
-  border: 1px solid rgba(16, 16, 15, .2);
+  width: min(88vw, 31rem);
+  aspect-ratio: 1.18;
+  border: 1px solid rgba(16, 16, 15, .16);
+  border-right-color: transparent;
   border-radius: 50%;
-  transform: translateX(-50%) rotate(-8deg);
+  transform: translateX(-50%) rotate(-11deg);
+}
+
+.depth-loop::after {
+  position: absolute;
+  inset: 11% -5%;
+  border: 1px solid rgba(16, 16, 15, .08);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  content: "";
+  transform: rotate(18deg);
 }
 
 .depth-plane {
-  width: 6.5rem;
-  height: 9rem;
-  border: 1px solid rgba(16, 16, 15, .1);
-  background: rgba(251, 250, 246, .4);
-  backdrop-filter: blur(3px);
+  display: none;
 }
 
 .depth-plane--one {
@@ -425,20 +434,22 @@ h2 em {
 }
 
 .depth-node {
-  width: .45rem;
+  width: .55rem;
   aspect-ratio: 1;
+  border: 1px solid rgba(16, 16, 15, .42);
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 0 0 .3rem rgba(242, 239, 231, .65);
 }
 
 .depth-node--one {
-  top: 14%;
-  left: 15%;
+  top: 17%;
+  left: 12%;
 }
 
 .depth-node--two {
-  right: 13%;
-  bottom: 18%;
+  right: 10%;
+  bottom: 20%;
 }
 
 .theme-echo {
@@ -448,12 +459,14 @@ h2 em {
 }
 
 .theme-echo--designer {
-  top: 47%;
-  left: -3%;
-  width: 58%;
-  height: 12rem;
-  opacity: calc(var(--designer-strength) * .62);
-  transform: translate3d(calc(var(--stage-x) * -.34), calc(var(--stage-y) * -.24), -35px) rotate(-3deg);
+  top: 39%;
+  right: -7%;
+  left: auto;
+  width: 66%;
+  height: 14rem;
+  filter: saturate(.88);
+  opacity: calc(var(--designer-strength) * .46);
+  transform: translate3d(calc(var(--stage-x) * .34), calc(var(--stage-y) * -.24), -35px) rotate(4deg);
 }
 
 .design-brush,
@@ -464,44 +477,50 @@ h2 em {
 }
 
 .design-brush {
-  height: .72rem;
-  border-radius: 999px 15% 999px 20%;
+  height: 1.3rem;
+  border-radius: 70% 24% 62% 18%;
+  clip-path: polygon(0 28%, 12% 7%, 31% 19%, 47% 0, 66% 23%, 100% 11%, 94% 76%, 70% 63%, 48% 100%, 29% 72%, 8% 91%);
+  mix-blend-mode: multiply;
+  opacity: .82;
   transform-origin: left center;
 }
 
 .design-brush--cobalt {
-  top: 30%;
-  left: 4%;
-  width: 58%;
-  background: #466ca4;
-  transform: rotate(-6deg);
+  top: 25%;
+  left: 2%;
+  width: 61%;
+  background: linear-gradient(90deg, #264f8b, #557aaf 72%, transparent);
+  transform: rotate(-8deg);
 }
 
 .design-brush--coral {
-  top: 47%;
-  left: 27%;
-  width: 38%;
-  height: .48rem;
-  background: #da8064;
-  transform: rotate(8deg);
+  top: 48%;
+  left: 23%;
+  width: 42%;
+  height: 1rem;
+  background: linear-gradient(90deg, #c85f4b, #df987e 74%, transparent);
+  transform: rotate(7deg);
 }
 
 .design-brush--ochre {
-  top: 61%;
-  left: 12%;
-  width: 49%;
-  height: .56rem;
-  background: #c9983d;
-  transform: rotate(-2deg);
+  top: 66%;
+  left: 8%;
+  width: 54%;
+  height: 1.1rem;
+  background: linear-gradient(90deg, #c28a2b, #d8b15d 76%, transparent);
+  transform: rotate(-3deg);
 }
 
 .design-orbit {
-  top: 9%;
-  right: 4%;
-  width: 5.5rem;
+  top: 5%;
+  right: auto;
+  left: 1%;
+  width: 6.4rem;
   aspect-ratio: 1;
-  border: 1px solid rgba(16, 16, 15, .42);
+  border: 1px solid rgba(16, 16, 15, .3);
+  border-left-color: transparent;
   border-radius: 50%;
+  transform: rotate(14deg);
 }
 
 .design-orbit::before {
@@ -510,47 +529,52 @@ h2 em {
   left: -24%;
   width: 148%;
   height: 1px;
-  background: rgba(16, 16, 15, .42);
+  background: rgba(16, 16, 15, .26);
   content: "";
-  transform: rotate(-34deg);
+  transform: rotate(-46deg);
 }
 
 .design-note {
-  color: #615e57;
+  color: #54514b;
   font-size: .5rem;
   font-weight: 600;
   letter-spacing: .11em;
+  opacity: .8;
 }
 
 .design-note--grid {
   top: 7%;
-  left: 4%;
+  right: 4%;
 }
 
 .design-note--form {
-  right: 0;
   bottom: 4%;
+  left: 0;
 }
 
 .theme-echo--marketer {
-  right: -1%;
-  bottom: 13%;
+  right: auto;
+  bottom: 12%;
+  left: -3%;
   display: grid;
-  width: 48%;
-  gap: .32rem;
-  color: #716e67;
+  width: 46%;
+  gap: .36rem;
+  padding-right: .9rem;
+  border-right: 1px solid rgba(16, 16, 15, .14);
+  color: #65625c;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: .49rem;
   letter-spacing: -.015em;
   line-height: 1.25;
-  opacity: calc(var(--marketer-strength) * .54);
-  transform: translate3d(calc(var(--stage-x) * .28), calc(var(--stage-y) * .18), -18px) rotate(2deg);
+  opacity: calc(var(--marketer-strength) * .43);
+  text-align: right;
+  transform: translate3d(calc(var(--stage-x) * -.28), calc(var(--stage-y) * .18), -18px) rotate(-2deg);
 }
 
-.theme-echo--marketer > span:nth-child(2) { padding-left: 14%; }
-.theme-echo--marketer > span:nth-child(3) { padding-left: 5%; }
-.theme-echo--marketer > span:nth-child(4) { padding-left: 24%; }
-.theme-echo--marketer > span:nth-child(5) { padding-left: 10%; }
+.theme-echo--marketer > span:nth-child(2) { padding-right: 14%; }
+.theme-echo--marketer > span:nth-child(3) { padding-right: 5%; }
+.theme-echo--marketer > span:nth-child(4) { padding-right: 24%; }
+.theme-echo--marketer > span:nth-child(5) { padding-right: 10%; }
 
 .theme-echo--marketer b {
   color: var(--ink);
@@ -563,7 +587,7 @@ h2 em {
   height: 2.6rem;
   align-items: end;
   gap: .28rem;
-  margin: .25rem 0 0 9%;
+  margin: .25rem 9% 0 auto;
   padding: 0 0 .35rem;
   border-bottom: 1px solid currentColor;
 }
@@ -586,7 +610,7 @@ h2 em {
   justify-self: center;
   width: min(100%, 28rem);
   aspect-ratio: 4 / 5;
-  margin: 0;
+  margin: 0 0 1.7rem;
   overflow: visible;
   border: 0;
   background: transparent;
@@ -605,12 +629,12 @@ h2 em {
   right: 10%;
   bottom: 1%;
   left: 10%;
-  height: 8%;
+  height: 6%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(16, 16, 15, .22), transparent 72%);
+  background: radial-gradient(ellipse, rgba(16, 16, 15, .18), transparent 74%);
   content: "";
   filter: blur(9px);
-  opacity: .5;
+  opacity: .38;
   transform: translate3d(calc(var(--stage-x) * -.18), 1.25rem, -30px) scaleX(.8);
 }
 
@@ -655,11 +679,17 @@ h2 em {
   height: 100%;
   object-fit: cover;
   -webkit-user-drag: none;
-  -webkit-mask-image: radial-gradient(ellipse 73% 92% at 50% 48%, #000 66%, rgba(0, 0, 0, .96) 75%, transparent 100%);
-  mask-image: radial-gradient(ellipse 73% 92% at 50% 48%, #000 66%, rgba(0, 0, 0, .96) 75%, transparent 100%);
-  /* The portraits share one hard split. Darken lets the page paper replace
-     the lighter source background without letting the images overlap. */
-  mix-blend-mode: darken;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0, #000 4%, #000 91%, transparent 100%),
+    radial-gradient(ellipse 58% 98% at 50% 49%, #000 51%, rgba(0, 0, 0, .96) 63%, rgba(0, 0, 0, .62) 76%, rgba(0, 0, 0, .16) 86%, transparent 92%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent 0, #000 4%, #000 91%, transparent 100%),
+    radial-gradient(ellipse 58% 98% at 50% 49%, #000 51%, rgba(0, 0, 0, .96) 63%, rgba(0, 0, 0, .62) 76%, rgba(0, 0, 0, .16) 86%, transparent 92%);
+  mask-composite: intersect;
+  /* Each portrait owns one side of the reveal. Normal blending keeps the
+     monochrome portrait neutral and prevents color from bleeding across. */
+  mix-blend-mode: normal;
   transform: translate3d(var(--stage-x), var(--stage-y), 24px) scale(1.015);
   transform-origin: 50% 0;
   transition:
@@ -702,39 +732,46 @@ h2 em {
 .portrait-caption {
   position: absolute;
   z-index: 6;
-  right: 6%;
-  bottom: .4rem;
-  left: 6%;
+  right: auto;
+  bottom: -1.55rem;
+  left: 50%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: .75rem;
-  padding: .62rem .78rem;
-  border: 1px solid rgba(16, 16, 15, .2);
-  border-radius: 999px;
-  background: rgba(251, 250, 246, .94);
-  box-shadow: 0 .6rem 1.5rem rgba(16, 16, 15, .08);
-  backdrop-filter: blur(8px);
+  justify-content: center;
+  gap: .7rem;
+  width: max-content;
+  min-width: min(78%, 15.5rem);
+  padding: .48rem .2rem .35rem;
+  border: 0;
+  border-top: 1px solid rgba(16, 16, 15, .26);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
   color: var(--ink);
-  font-size: .68rem;
+  font-size: .67rem;
   font-weight: 600;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  transform: translateZ(64px);
+  letter-spacing: .025em;
+  text-transform: none;
+  transform: translate3d(-50%, 0, 64px);
   backface-visibility: hidden;
+}
+
+.portrait-caption [data-mode-label] {
+  color: #34322f;
 }
 
 .portrait-caption__hint {
   display: inline-flex;
   align-items: center;
-  gap: .38rem;
-  color: #5d5a54;
+  gap: .32rem;
+  color: #706c64;
   white-space: nowrap;
 }
 
 .portrait-caption__hint b {
   color: var(--ink);
-  font-size: .92rem;
+  font-size: .86rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1;
@@ -2443,10 +2480,11 @@ body.dialog-open {
 
   .portrait-stage {
     width: 100%;
+    margin-bottom: 0;
   }
 
   .depth-field {
-    inset: 2% 17% 0;
+    inset: 2% 15% 0;
     overflow: visible;
   }
 
@@ -2476,17 +2514,18 @@ body.dialog-open {
 
   .theme-echo--marketer {
     top: 63%;
-    right: 2%;
+    right: auto;
     bottom: auto;
+    left: 2%;
     width: min(24vw, 21rem);
     gap: .42rem;
     font-size: clamp(.57rem, .7vw, .72rem);
-    opacity: calc(var(--marketer-strength) * .58);
+    opacity: calc(var(--marketer-strength) * .48);
   }
 
   .data-bars {
     gap: .38rem;
-    margin: .35rem 0 0 9%;
+    margin: .35rem 9% 0 auto;
   }
 
   .data-bars b {
@@ -2494,12 +2533,13 @@ body.dialog-open {
   }
 
   .theme-echo--designer {
-    top: 40%;
-    left: 1%;
-    width: min(27vw, 24rem);
-    height: 13rem;
-    opacity: calc(var(--designer-strength) * .72);
-    transform: translate3d(calc(var(--stage-x) * -.4), calc(var(--stage-y) * -.28), -35px) rotate(-3deg);
+    top: 36%;
+    right: 0;
+    left: auto;
+    width: min(28vw, 24rem);
+    height: 14rem;
+    opacity: calc(var(--designer-strength) * .56);
+    transform: translate3d(calc(var(--stage-x) * .4), calc(var(--stage-y) * -.28), -35px) rotate(3deg);
   }
 
   .design-brush--cobalt {
