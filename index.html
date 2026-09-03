@@ -25,7 +25,7 @@
     <link
       rel="preload"
       as="image"
-      href="assets/images/haoze-portrait-marketer-v6.jpg"
+      href="assets/images/haoze-portrait-marketer-cutout.jpg"
       fetchpriority="high"
     />
     <link rel="stylesheet" href="styles.css" />
@@ -72,6 +72,15 @@
         </div>
 
         <div class="identity-stage reveal" data-identity-stage>
+          <div class="depth-field" aria-hidden="true">
+            <span class="depth-halo"></span>
+            <span class="depth-loop"></span>
+            <span class="depth-plane depth-plane--one"></span>
+            <span class="depth-plane depth-plane--two"></span>
+            <span class="depth-node depth-node--one"></span>
+            <span class="depth-node depth-node--two"></span>
+          </div>
+
           <div class="theme-echo theme-echo--designer" aria-hidden="true">
             <span class="design-brush design-brush--cobalt"></span>
             <span class="design-brush design-brush--coral"></span>
@@ -86,6 +95,7 @@
             <span>CTR <b>+18.4%</b></span>
             <span>retention.curve()</span>
             <span>workflow → insight</span>
+            <span>search.intent = "clear"</span>
             <i class="data-bars"><b></b><b></b><b></b><b></b><b></b></i>
           </div>
 
@@ -103,13 +113,13 @@
           <figure
             class="portrait-stage"
             tabindex="0"
-            aria-label="Interactive portrait. Use left and right arrow keys, tap the labels, or swipe to switch between Marketer and Designer."
+            aria-label="Interactive portrait. Move across the portrait, use left and right arrow keys, tap the labels, or swipe to switch between Marketer and Designer."
             data-portrait
           >
             <img
               class="portrait portrait--marketer"
-              src="assets/images/haoze-portrait-marketer-v6.jpg"
-              alt="Monochrome editorial screen-print portrait of Haoze Ni smiling"
+              src="assets/images/haoze-portrait-marketer-cutout.jpg"
+              alt="Monochrome editorial portrait of Haoze Ni smiling"
               width="1122"
               height="1402"
               draggable="false"
@@ -117,8 +127,8 @@
             />
             <img
               class="portrait portrait--designer"
-              src="assets/images/haoze-portrait-designer-v36.png"
-              alt="Full-color abstract collage portrait of Haoze Ni"
+              src="assets/images/haoze-portrait-designer-cutout.jpg"
+              alt="Colorful abstract collage portrait of Haoze Ni smiling"
               width="1122"
               height="1402"
               draggable="false"
@@ -158,14 +168,19 @@
               <em>before the case studies.</em>
             </h2>
             <p class="intro-lede">
-              Hi, I’m Alex Nee—a marketer and designer in Boston. I like figuring out
-              what makes people click, stay, trust, and come back.
+              I’m Alex Nee. My work moves between marketing and design—sometimes I’m
+              reading the numbers, sometimes I’m shaping the experience, and usually
+              I’m doing a bit of both.
             </p>
           </div>
           <dl class="intro-notes">
             <div>
-              <dt>01 / Studied</dt>
-              <dd>Syracuse University → Boston University, Emerging Media.</dd>
+              <dt>01 / Education</dt>
+              <dd class="education-list">
+                <span>FH Technikum Wien</span>
+                <span>Syracuse University</span>
+                <span>Boston University</span>
+              </dd>
             </div>
             <div>
               <dt>02 / Work</dt>
@@ -173,7 +188,7 @@
             </div>
             <div>
               <dt>03 / Play</dt>
-              <dd>Sports—especially football and skiing—and any good excuse to stay active.</dd>
+              <dd>Football, skiing, violin—and anything that rewards rhythm, attention, and practice.</dd>
             </div>
           </dl>
         </div>
@@ -187,165 +202,298 @@
           </div>
         </div>
 
-        <div class="life-heading reveal">
-          <p class="section-number">Life / Off-screen</p>
-          <h2>Things I notice<br /><em>between projects.</em></h2>
-          <p>
-            A growing space for photographs, small observations, places, and interests.
-            The empty frames are intentionally ready for future stories.
-          </p>
-        </div>
-
-        <div class="life-track" aria-label="Personal interests and future story slots" data-drag-scroll>
-          <article class="life-card reveal" style="--life-accent: #c8795e">
-            <div class="life-placeholder" aria-label="Photography image to be added later">
-              <span>01</span><small>Image / note to add</small>
-            </div>
-            <h3>Frames</h3>
-            <p>Photography, depth of field, and the small decisions that change how a moment feels.</p>
-          </article>
-
-          <article class="life-card reveal" style="--life-accent: #7fa4a7">
-            <div class="life-placeholder" aria-label="Drone photography image to be added later">
-              <span>02</span><small>Image / note to add</small>
-            </div>
-            <h3>Altitude</h3>
-            <p>Drone imaging and the pleasure of seeing familiar places from an unfamiliar height.</p>
-          </article>
-
-          <article class="life-card reveal" style="--life-accent: #c79a3e">
-            <div class="life-placeholder" aria-label="Game and interaction image to be added later">
-              <span>03</span><small>Image / note to add</small>
-            </div>
-            <h3>Play</h3>
-            <p>Games, interaction, feedback, and the systems that make people curious enough to continue.</p>
-          </article>
-        </div>
       </section>
 
       <section class="projects section-dark" id="projects" aria-labelledby="projects-title">
         <div class="section-heading reveal">
           <p class="section-number">01 / Projects</p>
-          <h2 id="projects-title">Work shaped by<br /><em>people and evidence.</em></h2>
+          <h2 id="projects-title">Basics aren’t<br /> <em>basic.</em></h2>
           <p>
-            A working collection across marketing, product thinking, audience research,
-            visual media, and interaction. Full case studies can grow from this framework.
+            Each project begins with a person, a tension, or a question. Open any project
+            note for the context, the thinking, and the small choices that gave the work
+            its character.
           </p>
         </div>
 
-        <div class="project-grid">
-          <article class="project-card reveal" data-project-card>
-            <div class="project-cover" aria-hidden="true" data-project-cover><span>N</span><small>01</small></div>
-            <div class="project-meta"><span>Venture</span><span>Ongoing</span></div>
-            <h3>Nehzova</h3>
-            <p>Brand, market development, digital operations, and project-based growth systems.</p>
-            <ul class="tag-list"><li>Strategy</li><li>Brand</li><li>Growth</li></ul>
-            <details class="case-framework">
-              <summary><span>Open case-study framework</span><b aria-hidden="true">+</b></summary>
-              <div class="case-slots">
-                <p><span>Context</span><small>Add the founding story and market opportunity.</small></p>
-                <p><span>Process</span><small>Add brand, operations, and system artifacts.</small></p>
-                <p><span>Outcome</span><small>Add launches, partnerships, and measurable results.</small></p>
-              </div>
-            </details>
+        <div class="featured-projects">
+          <article class="featured-project reveal">
+            <button
+              class="featured-visual slopeframe-preview project-visual-button"
+              type="button"
+              aria-label="Open Slopeframe project note"
+              data-project-open="slopeframe"
+            >
+              <span class="featured-visual__top"><b>01 / Product design</b><i>Open project note ↗</i></span>
+              <span class="slopeframe-device-stack" data-project-cover>
+                <span class="slopeframe-device slopeframe-device--home">
+                  <img src="assets/images/slopeframe-home.jpg" alt="Slopeframe daily ski dashboard" width="1206" height="2622" loading="lazy" draggable="false" />
+                </span>
+                <span class="slopeframe-device slopeframe-device--booking" aria-hidden="true">
+                  <img src="assets/images/slopeframe-booking.jpg" alt="" width="1206" height="2622" loading="lazy" draggable="false" />
+                </span>
+                <span class="slopeframe-device slopeframe-device--match" aria-hidden="true">
+                  <img src="assets/images/slopeframe-match.jpg" alt="" width="1206" height="2622" loading="lazy" draggable="false" />
+                </span>
+              </span>
+              <span class="project-peek" aria-hidden="true">
+                <strong>Plan. Capture. Remember.</strong>
+                <small>A ski day designed around the moments worth keeping.</small>
+              </span>
+            </button>
+            <div class="featured-project__copy">
+              <div class="project-meta"><span>Mobile product</span><span>2026</span></div>
+              <h3>Slopeframe</h3>
+              <p>A ski-day companion that connects planning, local creators, photo matching, and the memories that remain after the lifts close.</p>
+              <button class="project-note-link" type="button" data-project-open="slopeframe">Read project note <span aria-hidden="true">↗</span></button>
+            </div>
           </article>
 
-          <article class="project-card reveal" data-project-card>
-            <div class="project-cover project-cover--app" aria-hidden="true" data-project-cover><span>APP</span><small>02</small></div>
-            <div class="project-meta"><span>Product + Operations</span><span>2026</span></div>
-            <h3>Commerce Workflow App</h3>
-            <p>
-              Designed an app and integrated workflow that simplified commerce data analysis
-              and made recurring operational decisions easier to manage.
-            </p>
-            <ul class="tag-list"><li>App</li><li>Workflow</li><li>Analytics</li></ul>
-            <details class="case-framework">
-              <summary><span>Open case-study framework</span><b aria-hidden="true">+</b></summary>
-              <div class="case-slots">
-                <p><span>Context</span><small>Add the original commerce-analysis bottleneck.</small></p>
-                <p><span>Process</span><small>Add app screens and the integrated workflow.</small></p>
-                <p><span>Outcome</span><small>Add time saved and decision-quality evidence.</small></p>
+          <article class="featured-project featured-project--reverse reveal">
+            <div
+              class="featured-visual gbh-gallery"
+              tabindex="0"
+              aria-label="GBH audience research slides. Use the arrow keys, buttons, or swipe to browse."
+              data-project-gallery
+            >
+              <div class="gallery-track" data-gallery-track>
+                <figure class="gallery-slide">
+                  <img src="assets/images/gbh-agenda.jpg" alt="GBH Arthur audience research agenda slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  <figcaption>Research structure</figcaption>
+                </figure>
+                <figure class="gallery-slide">
+                  <img src="assets/images/gbh-literature-review.jpg" alt="GBH Arthur audience research literature review slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  <figcaption>Literature review</figcaption>
+                </figure>
+                <figure class="gallery-slide">
+                  <img src="assets/images/gbh-framework.jpg" alt="GBH Arthur audience research theoretical framework slide" width="1800" height="1011" loading="lazy" draggable="false" />
+                  <figcaption>Theoretical framework</figcaption>
+                </figure>
               </div>
-            </details>
-          </article>
-
-          <article class="project-card reveal" data-project-card>
-            <div class="project-cover project-cover--depth" aria-hidden="true" data-project-cover><span>ƒ</span><small>03</small></div>
-            <div class="project-meta"><span>Visual Study</span><span>Ongoing</span></div>
-            <h3>Depth in Motion</h3>
-            <p>
-              An exploration of depth of field and perspective through drone and DSLR
-              photography, supported by AI-assisted learning and analysis.
-            </p>
-            <ul class="tag-list"><li>Photography</li><li>Drone</li><li>AI Learning</li></ul>
-            <details class="case-framework">
-              <summary><span>Open case-study framework</span><b aria-hidden="true">+</b></summary>
-              <div class="case-slots">
-                <p><span>Context</span><small>Add the visual question and shooting conditions.</small></p>
-                <p><span>Process</span><small>Add paired drone and DSLR image studies.</small></p>
-                <p><span>Outcome</span><small>Add depth findings and the AI learning log.</small></p>
+              <div class="gallery-controls">
+                <button type="button" aria-label="Previous GBH slide" data-gallery-prev>←</button>
+                <span data-gallery-status aria-live="polite">01 / 03</span>
+                <button type="button" aria-label="Next GBH slide" data-gallery-next>→</button>
               </div>
-            </details>
-          </article>
-
-          <article class="project-card reveal" data-project-card>
-            <div class="project-cover project-cover--gbh" aria-hidden="true" data-project-cover><span>A</span><small>04</small></div>
-            <div class="project-meta"><span>Audience Research</span><span>GBH Kids</span></div>
-            <h3>Understanding Arthur’s Audience</h3>
-            <p>
-              Research on nostalgia, parasocial interaction, media perception, and how a
-              long-running children’s property remains meaningful across generations.
-            </p>
-            <ul class="tag-list"><li>Survey</li><li>Media Psychology</li><li>SPSS</li></ul>
-            <details class="case-framework">
-              <summary><span>Open case-study framework</span><b aria-hidden="true">+</b></summary>
-              <div class="case-slots">
-                <p><span>Context</span><small>Add the GBH research question and audience.</small></p>
-                <p><span>Process</span><small>Add survey design, measures, and analysis.</small></p>
-                <p><span>Outcome</span><small>Add the strongest audience insight and implication.</small></p>
-              </div>
-            </details>
-          </article>
-
-          <article class="project-card reveal" data-project-card>
-            <div class="project-cover project-cover--tiktok" aria-hidden="true" data-project-cover><span>310</span><small>05</small></div>
-            <div class="project-meta"><span>Performance Analysis</span><span>TikTok</span></div>
-            <h3>Reading the Live-Commerce Room</h3>
-            <p>
-              Analysis of 310 livestream sessions and 80+ content frameworks across audience
-              retention, traffic, calls to action, timing, pricing, and conversion.
-            </p>
-            <ul class="tag-list"><li>Behavior</li><li>Content</li><li>Conversion</li></ul>
-            <details class="case-framework">
-              <summary><span>Open case-study framework</span><b aria-hidden="true">+</b></summary>
-              <div class="case-slots">
-                <p><span>Context</span><small>Add the commerce goal and dataset definition.</small></p>
-                <p><span>Process</span><small>Add retention, CTA, traffic, and pricing views.</small></p>
-                <p><span>Outcome</span><small>Add the decisions informed by 310 sessions.</small></p>
-              </div>
-            </details>
-          </article>
-
-          <article class="project-card reveal" data-project-card>
-            <div class="project-cover project-cover--game" aria-hidden="true" data-project-cover><span>PLAY</span><small>06</small></div>
-            <div class="project-meta"><span>Proposal</span><span>Game + Human–AI Interaction</span></div>
-            <h3>Designing Play Through Interaction</h3>
-            <p>
-              A game production proposal focused on feedback, player decisions, interaction
-              flow, and the relationship between mechanics and experience.
-            </p>
-            <ul class="tag-list"><li>Human–AI Interaction</li><li>Game Design</li><li>Interaction</li></ul>
-            <details class="case-framework">
-              <summary><span>Open case-study framework</span><b aria-hidden="true">+</b></summary>
-              <div class="case-slots">
-                <p><span>Context</span><small>Add the premise, player, and experience goal.</small></p>
-                <p><span>Process</span><small>Add interaction flows and prototype material.</small></p>
-                <p><span>Outcome</span><small>Add playtest feedback and next iteration.</small></p>
-              </div>
-            </details>
+            </div>
+            <div class="featured-project__copy">
+              <div class="project-meta"><span>Audience research</span><span>GBH Kids</span></div>
+              <h3>Understanding Arthur’s Audience</h3>
+              <p>A study of nostalgia, parasocial interaction, and why a familiar character can stay meaningful across generations.</p>
+              <button class="project-note-link" type="button" data-project-open="gbh">Read project note <span aria-hidden="true">↗</span></button>
+            </div>
           </article>
         </div>
+
+        <div class="project-index reveal">
+          <p class="project-index__label">More project notes</p>
+
+          <button class="project-row" type="button" data-project-open="nehzova">
+            <span class="project-row__index">03</span>
+            <h3>Nehzova</h3>
+                <p>An independent practice connecting market research, AI search, and design.</p>
+            <small>Founder &amp; Principal · Ongoing</small>
+            <span class="project-row__arrow" aria-hidden="true">↗</span>
+          </button>
+
+          <button class="project-row" type="button" data-project-open="commerce">
+            <span class="project-row__index">04</span>
+            <h3>Report Cockpit</h3>
+            <p>A weekly performance workspace that brings filters, KPI signals, and drill-down analysis into one flow.</p>
+            <small>Product + data operations</small>
+            <span class="project-row__arrow" aria-hidden="true">↗</span>
+          </button>
+
+          <button class="project-row" type="button" data-project-open="mydreamland">
+            <span class="project-row__index">05</span>
+            <h3>MyDreamland</h3>
+            <p>A game and HCI concept for making city loneliness feel less immovable.</p>
+            <small>Game design + CASA</small>
+            <span class="project-row__arrow" aria-hidden="true">↗</span>
+          </button>
+
+          <button class="project-row" type="button" data-project-open="fc25">
+            <span class="project-row__index">06</span>
+            <h3>FC25 Teaser</h3>
+            <p>A trailer-led microsite concept that turns a launch countdown into anticipation.</p>
+            <small>Interactive web + motion</small>
+            <span class="project-row__arrow" aria-hidden="true">↗</span>
+          </button>
+        </div>
       </section>
+
+      <dialog class="project-dialog" aria-label="Project overview" data-project-dialog>
+        <div class="project-dialog__shell">
+          <header class="project-dialog__header">
+            <span>Project note</span>
+            <button type="button" data-project-close>Close <span aria-hidden="true">×</span></button>
+          </header>
+          <div class="project-dialog__content" data-project-content></div>
+        </div>
+      </dialog>
+
+      <dialog class="media-viewer" aria-label="Expanded project image" data-media-viewer>
+        <button class="media-viewer__close" type="button" data-media-viewer-close>
+          Close <span aria-hidden="true">×</span>
+        </button>
+        <figure>
+          <img alt="" data-media-viewer-image />
+          <figcaption data-media-viewer-caption></figcaption>
+        </figure>
+      </dialog>
+
+      <template id="project-slopeframe">
+        <article class="case-note">
+          <header class="case-note__hero">
+            <p>01 / Mobile product · 2026</p>
+            <h2>Slopeframe</h2>
+            <div><strong>A ski day is more than a set of stats.</strong><span>This concept connects preparation, people, photographs, and the feeling of returning home with a story.</span></div>
+          </header>
+          <dl class="case-note__facts">
+            <div><dt>Role</dt><dd>Product and interaction design</dd></div>
+            <div><dt>Human need</dt><dd>Keep a fragmented ski day connected</dd></div>
+            <div><dt>Focus</dt><dd>Planning, booking, photo matching, and memories</dd></div>
+          </dl>
+          <div class="case-note__body">
+            <h3>Designed around the whole day.</h3>
+            <p>Slopeframe brings the practical and emotional parts of skiing into one calm flow: check the mountain, find a photographer, identify your photos, and collect each trip without losing the moment to admin.</p>
+          </div>
+          <div class="case-phone-rail" aria-label="Slopeframe interface screens">
+            <figure><img src="assets/images/slopeframe-home.jpg" alt="Slopeframe daily dashboard" width="1206" height="2622" loading="lazy" /><figcaption>Today / the day at a glance</figcaption></figure>
+            <figure><img src="assets/images/slopeframe-booking.jpg" alt="Slopeframe photographer booking" width="1206" height="2622" loading="lazy" /><figcaption>Booking / people on the mountain</figcaption></figure>
+            <figure><img src="assets/images/slopeframe-match.jpg" alt="Slopeframe AI photo matching settings" width="1206" height="2622" loading="lazy" /><figcaption>Matching / finding your own frame</figcaption></figure>
+            <figure><img src="assets/images/slopeframe-journal.jpg" alt="Slopeframe ski journal and photo archive" width="1206" height="2622" loading="lazy" /><figcaption>Journal / the memory after the run</figcaption></figure>
+          </div>
+        </article>
+      </template>
+
+      <template id="project-gbh">
+        <article class="case-note">
+          <header class="case-note__hero">
+            <p>02 / Audience research · GBH Kids</p>
+            <h2>Understanding Arthur’s Audience</h2>
+            <div><strong>Why does a familiar character stay with us?</strong><span>A research project about nostalgia, parasocial connection, and how media becomes part of personal and social memory.</span></div>
+          </header>
+          <dl class="case-note__facts">
+            <div><dt>Role</dt><dd>Research framing, theory, analysis, and recommendations</dd></div>
+            <div><dt>Question</dt><dd>How familiarity and attraction shape nostalgia and sharing</dd></div>
+            <div><dt>Lens</dt><dd>Parasocial Interaction Theory + media-induced nostalgia</dd></div>
+          </dl>
+          <div class="case-note__body">
+            <h3>Research with a memory inside it.</h3>
+            <p>The work translated academic theory into an audience framework that could explain not only what viewers remembered, but why that relationship might still influence attention, affection, and willingness to share.</p>
+          </div>
+          <div class="case-image-pair">
+            <figure><img src="assets/images/gbh-literature-review.jpg" alt="GBH Arthur literature review slide" width="1800" height="1007" loading="lazy" /><figcaption>From literature to a focused research question</figcaption></figure>
+            <figure><img src="assets/images/gbh-framework.jpg" alt="GBH Arthur theoretical framework slide" width="1800" height="1011" loading="lazy" /><figcaption>A model connecting attraction, nostalgia, and sharing</figcaption></figure>
+          </div>
+        </article>
+      </template>
+
+      <template id="project-nehzova">
+        <article class="case-note">
+          <header class="case-note__hero case-note__hero--compact">
+            <p>03 / Independent practice · Ongoing</p>
+            <h2>Nehzova</h2>
+            <div><strong>Founder &amp; Principal.</strong><span>An independent practice where market research, AI search, design, and digital operations can sit at the same table.</span></div>
+          </header>
+          <div class="case-media-gallery case-media-gallery--nehzova" aria-label="Nehzova website views">
+            <button class="case-media-card case-media-card--wide" type="button" data-case-image>
+              <span class="case-media-card__frame">
+                <img src="assets/images/nehzova-home.jpg" alt="Nehzova homepage with Find the signal headline" width="1280" height="720" loading="lazy" />
+              </span>
+              <span class="case-media-card__caption"><b>Homepage</b><small>Market intelligence meets AI design</small></span>
+            </button>
+            <button class="case-media-card case-media-card--wide" type="button" data-case-image>
+              <span class="case-media-card__frame">
+                <img src="assets/images/nehzova-services.jpg" alt="Nehzova services page with Evidence engineered for discovery headline" width="1280" height="720" loading="lazy" />
+              </span>
+              <span class="case-media-card__caption"><b>Services</b><small>Research-led systems for discovery</small></span>
+            </button>
+          </div>
+          <dl class="case-note__facts">
+            <div><dt>My role</dt><dd>Founder &amp; Principal</dd></div>
+            <div><dt>Built around</dt><dd>Clearer systems and thoughtful growth</dd></div>
+            <div><dt>Status</dt><dd>Living company practice</dd></div>
+          </dl>
+          <a class="case-external-link" href="https://www.nehzovagroup.com" target="_blank" rel="noreferrer">Visit Nehzova Group <span aria-hidden="true">↗</span></a>
+        </article>
+      </template>
+
+      <template id="project-commerce">
+        <article class="case-note">
+          <header class="case-note__hero case-note__hero--compact">
+            <p>04 / Product + data operations</p>
+            <h2>Report Cockpit</h2>
+            <div><strong>Less time assembling reports. More time reading the business.</strong><span>A weekly performance workspace that turns fragmented commerce data into a repeatable path from update to decision.</span></div>
+          </header>
+          <div class="case-media-gallery case-media-gallery--cockpit" aria-label="Report Cockpit interface views">
+            <button class="case-media-card case-media-card--feature" type="button" data-case-image>
+              <span class="case-media-card__frame">
+                <img src="assets/images/report-cockpit-overview.jpg" alt="Report Cockpit overview shown with a zero-result privacy filter" width="1280" height="720" loading="lazy" />
+              </span>
+              <span class="case-media-card__caption"><b>Decision overview</b><small>Real interface · privacy-safe filter applied</small></span>
+            </button>
+            <button class="case-media-card case-media-card--portrait" type="button" data-case-image>
+              <span class="case-media-card__frame">
+                <img src="assets/images/report-cockpit-filters.jpg" alt="Report Cockpit filtering controls" width="282" height="545" loading="lazy" />
+              </span>
+              <span class="case-media-card__caption"><b>Filter the question</b><small>Period, target band, buyer, product</small></span>
+            </button>
+            <button class="case-media-card case-media-card--portrait" type="button" data-case-image>
+              <span class="case-media-card__frame">
+                <img src="assets/images/report-cockpit-update.jpg" alt="Report Cockpit CSV batch update controls" width="282" height="545" loading="lazy" />
+              </span>
+              <span class="case-media-card__caption"><b>Update once</b><small>Batch CSV replacement workflow</small></span>
+            </button>
+          </div>
+          <dl class="case-note__facts">
+            <div><dt>Role</dt><dd>Product design, workflow integration, and analytical UX</dd></div>
+            <div><dt>System</dt><dd>Database extracts, batch CSV updates, and one reusable reporting layer</dd></div>
+            <div><dt>Decision flow</dt><dd>Filter → scan signals → compare periods → drill into the reason</dd></div>
+          </dl>
+          <div class="case-note__body">
+            <h3>One cockpit, several depths.</h3>
+            <p>The interface supports quick weekly reading without flattening the analysis. Teams can filter by period, target-price band, buyer type, or product; update source data in batches; configure the KPI deck; notice anomalies; then move from a date-focused view into rolling comparisons and product-level detail.</p>
+          </div>
+          <a class="case-external-link" href="https://helsennn.github.io/report-cockpit/" target="_blank" rel="noreferrer">Open live prototype <span aria-hidden="true">↗</span></a>
+        </article>
+      </template>
+
+      <template id="project-mydreamland">
+        <article class="case-note">
+          <header class="case-note__hero">
+            <p>05 / Game design + HCI</p>
+            <h2>MyDreamland</h2>
+            <div><strong>What if a crowded city felt less anonymous?</strong><span>A game concept that uses a conversational companion and place-based interactions to lower the emotional cost of reaching outward.</span></div>
+          </header>
+          <figure class="case-cinema case-cinema--dreamland"><img src="assets/images/mydreamland-city.jpg" alt="Two characters overlooking a warm futuristic city in MyDreamland" width="1170" height="643" loading="lazy" /><figcaption>A warmer social layer for an isolating city</figcaption></figure>
+          <dl class="case-note__facts">
+            <div><dt>Human problem</dt><dd>Urban loneliness and the high pressure of initiating connection</dd></div>
+            <div><dt>Design lens</dt><dd>CASA—people respond socially to computers that present social cues</dd></div>
+            <div><dt>Role</dt><dd>Game concept, narrative system, and interaction design</dd></div>
+          </dl>
+          <div class="case-note__body case-note__body--steps">
+            <h3>Connection starts small.</h3>
+            <ol><li><span>01</span>A companion checks in without judging.</li><li><span>02</span>Place-based micro-quests make the city feel discoverable.</li><li><span>03</span>Opt-in shared moments create reasons to connect.</li><li><span>04</span>Reflection turns isolated events into an ongoing story.</li></ol>
+          </div>
+        </article>
+      </template>
+
+      <template id="project-fc25">
+        <article class="case-note">
+          <header class="case-note__hero">
+            <p>06 / Interactive web + motion</p>
+            <h2>FC25 Teaser</h2>
+            <div><strong>A launch page should create a feeling before it explains everything.</strong><span>An unofficial teaser-site concept using cinematic pacing and progressive disclosure to warm up an audience before release.</span></div>
+          </header>
+          <figure class="case-cinema case-cinema--video"><video src="assets/media/fc25-teaser.mov" controls muted playsinline preload="metadata" aria-label="FC25 teaser concept video"></video><figcaption>Motion study used as the site’s opening signal</figcaption></figure>
+          <dl class="case-note__facts">
+            <div><dt>Role</dt><dd>Concept, visual direction, interaction, and motion</dd></div>
+            <div><dt>Experience</dt><dd>Trailer-first entry, timed reveals, and restrained launch information</dd></div>
+            <div><dt>Goal</dt><dd>Turn a countdown into anticipation rather than noise</dd></div>
+          </dl>
+        </article>
+      </template>
 
       <section class="publications" id="publications" aria-labelledby="publications-title">
         <div class="section-heading section-heading--wide reveal">
@@ -355,7 +503,7 @@
 
         <ol class="publication-list" data-publication-accordion>
           <li class="publication reveal">
-            <details open>
+            <details>
               <summary>
                 <span class="publication-year">2026</span>
                 <h3>Cross-Platform Epistemic Verification for Improving Factual Reliability in AI-Generated News Summarization</h3>

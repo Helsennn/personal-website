@@ -8,6 +8,15 @@ const menuToggle = document.querySelector('[data-menu-toggle]');
 const nav = document.querySelector('[data-nav]');
 const kineticTitle = document.querySelector('[data-kinetic-title]');
 const projectCovers = [...document.querySelectorAll('[data-project-cover]')];
+const projectGalleries = [...document.querySelectorAll('[data-project-gallery]')];
+const projectDialog = document.querySelector('[data-project-dialog]');
+const projectDialogContent = document.querySelector('[data-project-content]');
+const projectDialogClose = document.querySelector('[data-project-close]');
+const projectOpeners = [...document.querySelectorAll('[data-project-open]')];
+const mediaViewer = document.querySelector('[data-media-viewer]');
+const mediaViewerImage = document.querySelector('[data-media-viewer-image]');
+const mediaViewerCaption = document.querySelector('[data-media-viewer-caption]');
+const mediaViewerClose = document.querySelector('[data-media-viewer-close]');
 const publicationDetails = [...document.querySelectorAll('[data-publication-accordion] details')];
 
 let activeMode = 'marketer';
@@ -18,8 +27,20 @@ let touchStartTime = 0;
 let didSwipePortrait = false;
 let modeSettleTimer;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+const touchFirstMedia = window.matchMedia('(hover: none), (pointer: coarse)');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const modeSettleDuration = reduceMotion ? 0 : 520;
+const modeSettleDuration = reduceMotion ? 0 : 680;
+
+function setPortraitDepth(x = 0, y = 0) {
+  if (!identityStage || reduceMotion) return;
+
+  const boundedX = Math.min(1, Math.max(-1, x));
+  const boundedY = Math.min(1, Math.max(-1, y));
+  identityStage.style.setProperty('--stage-x', `${boundedX * 7}px`);
+  identityStage.style.setProperty('--stage-y', `${boundedY * 5}px`);
+  identityStage.style.setProperty('--stage-tilt-x', `${boundedY * -1.25}deg`);
+  identityStage.style.setProperty('--stage-tilt-y', `${boundedX * 1.8}deg`);
+}
 
 function getPortraitReveal() {
   if (!hero) return activeMode === 'marketer' ? 100 : 0;
@@ -102,12 +123,15 @@ if (portrait) {
       hero.dataset.tracking = 'true';
       const bounds = portrait.getBoundingClientRect();
       const pointerPosition = (event.clientX - bounds.left) / bounds.width;
+      const pointerY = (event.clientY - bounds.top) / bounds.height;
       setBlend((1 - pointerPosition) * 100);
+      setPortraitDepth((pointerPosition - .5) * 2, (pointerY - .5) * 2);
     });
 
     portrait.addEventListener('pointerleave', () => {
       delete hero.dataset.tracking;
       setBlend(50);
+      setPortraitDepth();
     });
   }
 
@@ -138,12 +162,14 @@ if (portrait) {
     const bounds = portrait.getBoundingClientRect();
     const reveal = touchStartPercentage + (distanceX / bounds.width) * 100;
     setBlend(reveal);
+    setPortraitDepth(Math.max(-1, Math.min(1, distanceX / (bounds.width * .42))), 0);
   }, { passive: false });
 
   portrait.addEventListener('touchend', (event) => {
     const distance = event.changedTouches[0].clientX - touchStartX;
     const duration = Math.max(1, performance.now() - touchStartTime);
     delete hero.dataset.swiping;
+    setPortraitDepth();
 
     if (!didSwipePortrait) return;
     event.preventDefault();
@@ -159,6 +185,7 @@ if (portrait) {
 
   portrait.addEventListener('touchcancel', () => {
     delete hero.dataset.swiping;
+    setPortraitDepth();
     if (didSwipePortrait) {
       setMode(getPortraitReveal() >= 50 ? 'marketer' : 'designer');
     }
@@ -211,6 +238,220 @@ if (finePointer.matches) {
     });
   });
 }
+
+projectGalleries.forEach((gallery) => {
+  const track = gallery.querySelector('[data-gallery-track]');
+  const slides = [...gallery.querySelectorAll('.gallery-slide')];
+  const previousButton = gallery.querySelector('[data-gallery-prev]');
+  const nextButton = gallery.querySelector('[data-gallery-next]');
+  const status = gallery.querySelector('[data-gallery-status]');
+  let activeIndex = 0;
+  let scrollFrame;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+
+  if (!track || slides.length === 0) return;
+
+  const updateStatus = () => {
+    if (status) status.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+  };
+
+  const goToSlide = (index, behavior = reduceMotion ? 'auto' : 'smooth') => {
+    activeIndex = (index + slides.length) % slides.length;
+    track.scrollTo({ left: activeIndex * track.clientWidth, behavior });
+    updateStatus();
+  };
+
+  previousButton?.addEventListener('click', () => goToSlide(activeIndex - 1));
+  nextButton?.addEventListener('click', () => goToSlide(activeIndex + 1));
+
+  gallery.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      goToSlide(activeIndex - 1);
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      goToSlide(activeIndex + 1);
+    }
+  });
+
+  track.addEventListener('scroll', () => {
+    window.cancelAnimationFrame(scrollFrame);
+    scrollFrame = window.requestAnimationFrame(() => {
+      const nextIndex = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      if (nextIndex !== activeIndex) {
+        activeIndex = Math.min(slides.length - 1, Math.max(0, nextIndex));
+        updateStatus();
+      }
+    });
+  }, { passive: true });
+
+  if (finePointer.matches) {
+    track.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      isDragging = true;
+      dragStartX = event.clientX;
+      dragStartScroll = track.scrollLeft;
+      track.classList.add('is-dragging');
+      track.setPointerCapture(event.pointerId);
+    });
+
+    track.addEventListener('pointermove', (event) => {
+      if (!isDragging) return;
+      track.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
+    });
+
+    const finishDrag = (event) => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('is-dragging');
+      if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
+      goToSlide(Math.round(track.scrollLeft / Math.max(1, track.clientWidth)));
+    };
+
+    track.addEventListener('pointerup', finishDrag);
+    track.addEventListener('pointercancel', finishDrag);
+    track.addEventListener('dragstart', (event) => event.preventDefault());
+  }
+
+  updateStatus();
+});
+
+let projectReturnFocus = null;
+let mediaReturnFocus = null;
+let selectedMobileMedia = null;
+let touchProjectPreview = null;
+let touchProjectPreviewTimer;
+let touchProjectAnimationTimer;
+
+function closeMediaViewer() {
+  if (!mediaViewer?.open) return;
+  mediaViewer.close();
+}
+
+function openMediaViewer(trigger) {
+  const sourceImage = trigger?.querySelector('img');
+  if (!mediaViewer || !mediaViewerImage || !sourceImage) return;
+
+  mediaReturnFocus = trigger;
+  mediaViewerImage.src = sourceImage.currentSrc || sourceImage.src;
+  mediaViewerImage.alt = sourceImage.alt;
+
+  if (mediaViewerCaption) {
+    const caption = trigger.querySelector('.case-media-card__caption');
+    mediaViewerCaption.textContent = caption?.innerText.replace(/\s+/g, ' ').trim() || sourceImage.alt;
+  }
+
+  if (typeof mediaViewer.showModal === 'function') {
+    mediaViewer.showModal();
+  } else {
+    mediaViewer.setAttribute('open', '');
+  }
+}
+
+function closeProjectDialog() {
+  if (!projectDialog?.open) return;
+  projectDialog.close();
+}
+
+function openProjectDialog(projectKey, trigger) {
+  if (!projectDialog || !projectDialogContent) return;
+
+  const template = document.querySelector(`#project-${projectKey}`);
+  if (!(template instanceof HTMLTemplateElement)) return;
+
+  projectReturnFocus = trigger || document.activeElement;
+  selectedMobileMedia = null;
+  projectDialogContent.replaceChildren(template.content.cloneNode(true));
+  document.body.classList.add('dialog-open');
+
+  if (typeof projectDialog.showModal === 'function') {
+    projectDialog.showModal();
+  } else {
+    projectDialog.setAttribute('open', '');
+  }
+
+  projectDialog.querySelector('.project-dialog__shell')?.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+projectOpeners.forEach((opener) => {
+  opener.addEventListener('click', (event) => {
+    const usesTouchPreview = (
+      touchFirstMedia.matches || window.innerWidth < 700
+    ) && opener.classList.contains('slopeframe-preview') && event.detail !== 0 && !reduceMotion;
+
+    if (usesTouchPreview && touchProjectPreview !== opener) {
+      window.clearTimeout(touchProjectPreviewTimer);
+      window.clearTimeout(touchProjectAnimationTimer);
+      touchProjectPreview = opener;
+      opener.classList.remove('is-previewing');
+      void opener.offsetWidth;
+      opener.classList.add('is-previewing');
+      touchProjectAnimationTimer = window.setTimeout(() => {
+        opener.classList.remove('is-previewing');
+      }, 3000);
+      touchProjectPreviewTimer = window.setTimeout(() => {
+        touchProjectPreview = null;
+      }, 7000);
+      return;
+    }
+
+    window.clearTimeout(touchProjectPreviewTimer);
+    window.clearTimeout(touchProjectAnimationTimer);
+    opener.classList.remove('is-previewing');
+    touchProjectPreview = null;
+    openProjectDialog(opener.dataset.projectOpen, opener);
+  });
+});
+
+projectDialogContent?.addEventListener('click', (event) => {
+  const mediaCard = event.target.closest('[data-case-image]');
+  if (!(mediaCard instanceof HTMLButtonElement)) return;
+
+  const usesTouchFirstMedia = touchFirstMedia.matches || window.innerWidth < 700;
+  if (!usesTouchFirstMedia || event.detail === 0 || selectedMobileMedia === mediaCard) {
+    openMediaViewer(mediaCard);
+    return;
+  }
+
+  projectDialogContent.querySelectorAll('[data-case-image].is-active').forEach((card) => {
+    card.classList.remove('is-active');
+    card.setAttribute('aria-pressed', 'false');
+  });
+  mediaCard.classList.add('is-active');
+  mediaCard.setAttribute('aria-pressed', 'true');
+  selectedMobileMedia = mediaCard;
+});
+
+projectDialogClose?.addEventListener('click', closeProjectDialog);
+mediaViewerClose?.addEventListener('click', closeMediaViewer);
+
+projectDialog?.addEventListener('click', (event) => {
+  if (event.target === projectDialog) closeProjectDialog();
+});
+
+mediaViewer?.addEventListener('click', (event) => {
+  if (event.target === mediaViewer) closeMediaViewer();
+});
+
+mediaViewer?.addEventListener('close', () => {
+  if (mediaViewerImage) {
+    mediaViewerImage.removeAttribute('src');
+    mediaViewerImage.alt = '';
+  }
+  if (mediaReturnFocus instanceof HTMLElement) mediaReturnFocus.focus({ preventScroll: true });
+  mediaReturnFocus = null;
+});
+
+projectDialog?.addEventListener('close', () => {
+  closeMediaViewer();
+  document.body.classList.remove('dialog-open');
+  projectDialogContent?.querySelectorAll('video').forEach((video) => video.pause());
+  if (projectReturnFocus instanceof HTMLElement) projectReturnFocus.focus({ preventScroll: true });
+  projectReturnFocus = null;
+});
 
 publicationDetails.forEach((details) => {
   details.addEventListener('toggle', () => {
