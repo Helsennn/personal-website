@@ -135,7 +135,7 @@
             />
             <figcaption class="portrait-caption">
               <span data-mode-label>Marketer / Designer</span>
-              <span>Tap or swipe to switch</span>
+              <span class="portrait-caption__hint">Tap or swipe <b aria-hidden="true">↔</b></span>
             </figcaption>
           </figure>
 
@@ -161,7 +161,7 @@
 
       <section class="home-intro" id="about" aria-labelledby="intro-title">
         <div class="intro-grid reveal">
-          <p class="section-number">00 / About</p>
+          <p class="section-number"><span>00</span><small>/ About</small></p>
           <div class="intro-statement">
             <h2 id="intro-title">
               A little about me—<br />
@@ -175,30 +175,35 @@
           </div>
           <dl class="intro-notes">
             <div>
-              <dt>01 / Education</dt>
+              <dt><span>01</span><small>/ Education</small></dt>
               <dd class="education-list">
                 <span>FH Technikum Wien</span>
+                <span>Sichuan University</span>
                 <span>Syracuse University</span>
                 <span>Boston University</span>
               </dd>
             </div>
             <div>
-              <dt>02 / Work</dt>
+              <dt><span>02</span><small>/ Work</small></dt>
               <dd>Customer acquisition, SEO, digital analytics, visual design, and Human–AI interaction.</dd>
             </div>
             <div>
-              <dt>03 / Play</dt>
+              <dt><span>03</span><small>/ Play</small></dt>
               <dd>Football, skiing, violin—and anything that rewards rhythm, attention, and practice.</dd>
             </div>
           </dl>
         </div>
 
         <div class="practice-marquee" aria-hidden="true">
-          <div>
-            <span>Marketing</span><i>•</i><span>Design</span><i>•</i><span>Human–AI Interaction</span><i>•</i>
-            <span>Applied AI</span><i>•</i><span>Customer Acquisition</span><i>•</i><span>SEO</span><i>•</i>
-            <span>Marketing</span><i>•</i><span>Design</span><i>•</i><span>Human–AI Interaction</span><i>•</i>
-            <span>Applied AI</span><i>•</i><span>Customer Acquisition</span><i>•</i><span>SEO</span><i>•</i>
+          <div class="practice-marquee__track">
+            <div class="practice-marquee__group">
+              <span>Marketing</span><i>•</i><span>Design</span><i>•</i><span>Human–AI Interaction</span><i>•</i>
+              <span>Applied AI</span><i>•</i><span>Customer Acquisition</span><i>•</i><span>SEO</span><i>•</i>
+            </div>
+            <div class="practice-marquee__group">
+              <span>Marketing</span><i>•</i><span>Design</span><i>•</i><span>Human–AI Interaction</span><i>•</i>
+              <span>Applied AI</span><i>•</i><span>Customer Acquisition</span><i>•</i><span>SEO</span><i>•</i>
+            </div>
           </div>
         </div>
 
@@ -206,7 +211,7 @@
 
       <section class="projects section-dark" id="projects" aria-labelledby="projects-title">
         <div class="section-heading reveal">
-          <p class="section-number">01 / Projects</p>
+          <p class="section-number"><span>01</span><small>/ Projects</small></p>
           <h2 id="projects-title">Basics aren’t<br /> <em>basic.</em></h2>
           <p>
             Each project begins with a person, a tension, or a question. Open any project
@@ -223,7 +228,7 @@
               aria-label="Open Slopeframe project note"
               data-project-open="slopeframe"
             >
-              <span class="featured-visual__top"><b>01 / Product design</b><i>Open project note ↗</i></span>
+              <span class="featured-visual__top"><b><span>01</span><small>/ Product design</small></b><i>Open project note ↗</i></span>
               <span class="slopeframe-device-stack" data-project-cover>
                 <span class="slopeframe-device slopeframe-device--home">
                   <img src="assets/images/slopeframe-home.jpg" alt="Slopeframe daily ski dashboard" width="1206" height="2622" loading="lazy" draggable="false" />
@@ -257,15 +262,15 @@
             >
               <div class="gallery-track" data-gallery-track>
                 <figure class="gallery-slide">
-                  <img src="assets/images/gbh-agenda.jpg" alt="GBH Arthur audience research agenda slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  <img src="assets/images/gbh-agenda.jpg" alt="GBH Kids audience research agenda slide" width="1800" height="1007" loading="lazy" draggable="false" />
                   <figcaption>Research structure</figcaption>
                 </figure>
                 <figure class="gallery-slide">
-                  <img src="assets/images/gbh-literature-review.jpg" alt="GBH Arthur audience research literature review slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  <img src="assets/images/gbh-literature-review.jpg" alt="GBH Kids audience research literature review slide" width="1800" height="1007" loading="lazy" draggable="false" />
                   <figcaption>Literature review</figcaption>
                 </figure>
                 <figure class="gallery-slide">
-                  <img src="assets/images/gbh-framework.jpg" alt="GBH Arthur audience research theoretical framework slide" width="1800" height="1011" loading="lazy" draggable="false" />
+                  <img src="assets/images/gbh-framework.jpg" alt="GBH Kids audience research theoretical framework slide" width="1800" height="1011" loading="lazy" draggable="false" />
                   <figcaption>Theoretical framework</figcaption>
                 </figure>
               </div>
@@ -277,8 +282,8 @@
             </div>
             <div class="featured-project__copy">
               <div class="project-meta"><span>Audience research</span><span>GBH Kids</span></div>
-              <h3>Understanding Arthur’s Audience</h3>
-              <p>A study of nostalgia, parasocial interaction, and why a familiar character can stay meaningful across generations.</p>
+              <h3>Understanding the GBH Kids Audience</h3>
+              <p>A study of how nostalgia, parasocial interaction, and familiar characters shape connection across the GBH Kids audience.</p>
               <button class="project-note-link" type="button" data-project-open="gbh">Read project note <span aria-hidden="true">↗</span></button>
             </div>
           </article>
@@ -394,8 +399,8 @@
         <article class="case-note">
           <header class="case-note__hero">
             <p>02 / Audience research · GBH Kids</p>
-            <h2>Understanding Arthur’s Audience</h2>
-            <div><strong>Why does a familiar character stay with us?</strong><span>A research project about nostalgia, parasocial connection, and how media becomes part of personal and social memory.</span></div>
+            <h2>Understanding the GBH Kids Audience</h2>
+            <div><strong>What keeps a kids’ media audience connected over time?</strong><span>A GBH Kids audience study exploring nostalgia, parasocial connection, and how familiar media becomes part of personal and social memory.</span></div>
           </header>
           <dl class="case-note__facts">
             <div><dt>Role</dt><dd>Research framing, theory, analysis, and recommendations</dd></div>
@@ -406,22 +411,22 @@
             <h3>Research with a memory inside it.</h3>
             <p>The work translated academic theory into an audience framework that could explain not only what viewers remembered, but why that relationship might still influence attention, affection, and willingness to share.</p>
           </div>
-          <div class="case-media-gallery case-media-gallery--gbh-note" aria-label="Arthur audience research deck">
+          <div class="case-media-gallery case-media-gallery--gbh-note" aria-label="GBH Kids audience research deck">
             <button class="case-media-card case-media-card--feature" type="button" data-case-image>
               <span class="case-media-card__frame">
-                <img src="assets/images/gbh-agenda.jpg" alt="GBH Arthur audience research agenda slide" width="1800" height="1007" loading="lazy" />
+                <img src="assets/images/gbh-agenda.jpg" alt="GBH Kids audience research agenda slide" width="1800" height="1007" loading="lazy" />
               </span>
               <span class="case-media-card__caption"><b>Research structure</b><small>From the brief to focused questions</small></span>
             </button>
             <button class="case-media-card case-media-card--wide" type="button" data-case-image>
               <span class="case-media-card__frame">
-                <img src="assets/images/gbh-literature-review.jpg" alt="GBH Arthur literature review slide" width="1800" height="1007" loading="lazy" />
+                <img src="assets/images/gbh-literature-review.jpg" alt="GBH Kids audience literature review slide" width="1800" height="1007" loading="lazy" />
               </span>
               <span class="case-media-card__caption"><b>Literature review</b><small>Theory distilled into relationships</small></span>
             </button>
             <button class="case-media-card case-media-card--wide" type="button" data-case-image>
               <span class="case-media-card__frame">
-                <img src="assets/images/gbh-framework.jpg" alt="GBH Arthur theoretical framework slide" width="1800" height="1011" loading="lazy" />
+                <img src="assets/images/gbh-framework.jpg" alt="GBH Kids audience theoretical framework slide" width="1800" height="1011" loading="lazy" />
               </span>
               <span class="case-media-card__caption"><b>Theoretical framework</b><small>Attraction, nostalgia, and sharing</small></span>
             </button>
@@ -537,7 +542,7 @@
 
       <section class="publications" id="publications" aria-labelledby="publications-title">
         <div class="section-heading section-heading--wide reveal">
-          <p class="section-number">02 / Publications</p>
+          <p class="section-number"><span>02</span><small>/ Publications</small></p>
           <h2 id="publications-title">Research for more<br /><em>trustworthy systems.</em></h2>
         </div>
 
