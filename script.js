@@ -13,6 +13,7 @@ const projectDialog = document.querySelector('[data-project-dialog]');
 const projectDialogContent = document.querySelector('[data-project-content]');
 const projectDialogClose = document.querySelector('[data-project-close]');
 const projectOpeners = [...document.querySelectorAll('[data-project-open]')];
+const projectRows = [...document.querySelectorAll('.project-row')];
 const mediaViewer = document.querySelector('[data-media-viewer]');
 const mediaViewerImage = document.querySelector('[data-media-viewer-image]');
 const mediaViewerCaption = document.querySelector('[data-media-viewer-caption]');
@@ -326,6 +327,37 @@ let touchProjectPreview = null;
 let touchProjectPreviewTimer;
 let touchProjectAnimationTimer;
 
+function setProjectPreviewActive(opener, active) {
+  opener?.classList.toggle('is-previewing', active);
+  const previewVideo = opener?.querySelector('.project-row__preview video');
+
+  if (!(previewVideo instanceof HTMLVideoElement)) return;
+
+  if (active) {
+    previewVideo.play().catch(() => {});
+    return;
+  }
+
+  previewVideo.pause();
+  previewVideo.currentTime = 0;
+}
+
+projectRows.forEach((row) => {
+  row.addEventListener('pointerenter', () => {
+    if (!finePointer.matches) return;
+    const previewVideo = row.querySelector('.project-row__preview video');
+    previewVideo?.play().catch(() => {});
+  });
+
+  row.addEventListener('pointerleave', () => {
+    if (!finePointer.matches) return;
+    const previewVideo = row.querySelector('.project-row__preview video');
+    if (!(previewVideo instanceof HTMLVideoElement)) return;
+    previewVideo.pause();
+    previewVideo.currentTime = 0;
+  });
+});
+
 function closeMediaViewer() {
   if (!mediaViewer?.open) return;
   mediaViewer.close();
@@ -380,27 +412,36 @@ projectOpeners.forEach((opener) => {
   opener.addEventListener('click', (event) => {
     const usesTouchPreview = (
       touchFirstMedia.matches || window.innerWidth < 700
-    ) && opener.classList.contains('slopeframe-preview') && event.detail !== 0 && !reduceMotion;
+    ) && (
+      opener.classList.contains('slopeframe-preview') ||
+      opener.classList.contains('project-row')
+    ) && event.detail !== 0 && !reduceMotion;
 
     if (usesTouchPreview && touchProjectPreview !== opener) {
       window.clearTimeout(touchProjectPreviewTimer);
       window.clearTimeout(touchProjectAnimationTimer);
+      setProjectPreviewActive(touchProjectPreview, false);
       touchProjectPreview = opener;
-      opener.classList.remove('is-previewing');
+      setProjectPreviewActive(opener, false);
       void opener.offsetWidth;
-      opener.classList.add('is-previewing');
-      touchProjectAnimationTimer = window.setTimeout(() => {
-        opener.classList.remove('is-previewing');
-      }, 3000);
+      setProjectPreviewActive(opener, true);
+
+      if (opener.classList.contains('slopeframe-preview')) {
+        touchProjectAnimationTimer = window.setTimeout(() => {
+          setProjectPreviewActive(opener, false);
+        }, 3000);
+      }
+
       touchProjectPreviewTimer = window.setTimeout(() => {
+        setProjectPreviewActive(opener, false);
         touchProjectPreview = null;
-      }, 7000);
+      }, opener.classList.contains('project-row') ? 10000 : 7000);
       return;
     }
 
     window.clearTimeout(touchProjectPreviewTimer);
     window.clearTimeout(touchProjectAnimationTimer);
-    opener.classList.remove('is-previewing');
+    setProjectPreviewActive(opener, false);
     touchProjectPreview = null;
     openProjectDialog(opener.dataset.projectOpen, opener);
   });
