@@ -222,7 +222,7 @@ main section[id] {
   --designer-strength: .5;
   min-height: calc(100svh - 4.5rem);
   padding: clamp(2.5rem, 8vw, 6rem) var(--page-pad) 1.5rem;
-  transition: --portrait-reveal .52s var(--ease);
+  transition: --portrait-reveal .78s cubic-bezier(.16, 1, .3, 1);
 }
 
 .hero[data-swiping="true"],
@@ -679,14 +679,6 @@ h2 em {
   height: 100%;
   object-fit: cover;
   -webkit-user-drag: none;
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent 0, #000 4%, #000 91%, transparent 100%),
-    radial-gradient(ellipse 58% 98% at 50% 49%, #000 51%, rgba(0, 0, 0, .96) 63%, rgba(0, 0, 0, .62) 76%, rgba(0, 0, 0, .16) 86%, transparent 92%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to bottom, transparent 0, #000 4%, #000 91%, transparent 100%),
-    radial-gradient(ellipse 58% 98% at 50% 49%, #000 51%, rgba(0, 0, 0, .96) 63%, rgba(0, 0, 0, .62) 76%, rgba(0, 0, 0, .16) 86%, transparent 92%);
-  mask-composite: intersect;
   /* Each portrait owns one side of the reveal. Normal blending keeps the
      monochrome portrait neutral and prevents color from bleeding across. */
   mix-blend-mode: normal;
@@ -694,9 +686,9 @@ h2 em {
   transform-origin: 50% 0;
   transition:
     opacity .5s var(--ease),
-    -webkit-clip-path .62s var(--ease),
-    clip-path .62s var(--ease),
-    transform .72s var(--ease),
+    -webkit-clip-path .78s cubic-bezier(.16, 1, .3, 1),
+    clip-path .78s cubic-bezier(.16, 1, .3, 1),
+    transform .78s cubic-bezier(.16, 1, .3, 1),
     filter .55s ease;
 }
 
@@ -708,6 +700,14 @@ h2 em {
 .portrait--marketer {
   z-index: 2;
   opacity: 1;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0, #000 4%, #000 91%, transparent 100%),
+    radial-gradient(ellipse 58% 98% at 50% 49%, #000 51%, rgba(0, 0, 0, .96) 63%, rgba(0, 0, 0, .62) 76%, rgba(0, 0, 0, .16) 86%, transparent 92%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent 0, #000 4%, #000 91%, transparent 100%),
+    radial-gradient(ellipse 58% 98% at 50% 49%, #000 51%, rgba(0, 0, 0, .96) 63%, rgba(0, 0, 0, .62) 76%, rgba(0, 0, 0, .16) 86%, transparent 92%);
+  mask-composite: intersect;
   -webkit-clip-path: inset(0 calc(100% - var(--portrait-reveal)) 0 0);
   clip-path: inset(0 calc(100% - var(--portrait-reveal)) 0 0);
 }
@@ -715,6 +715,8 @@ h2 em {
 .portrait--designer {
   z-index: 1;
   opacity: 1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 89%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0 89%, transparent 100%);
   -webkit-clip-path: inset(0 0 0 var(--portrait-reveal));
   clip-path: inset(0 0 0 var(--portrait-reveal));
 }
@@ -1037,13 +1039,15 @@ h2 em {
 .slopeframe-preview {
   display: grid;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 5 / 6;
   place-items: center;
   padding: 0;
   border-radius: 0;
   cursor: pointer;
   font: inherit;
   text-align: left;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .slopeframe-preview::before {
@@ -1106,8 +1110,8 @@ h2 em {
   position: absolute;
   z-index: 2;
   display: block;
-  top: 9%;
-  bottom: 2%;
+  top: 5%;
+  bottom: -3%;
   left: 50%;
   width: 64%;
   filter: drop-shadow(0 1.3rem 1.4rem rgba(16, 16, 15, .2));
@@ -1163,24 +1167,24 @@ h2 em {
 .slopeframe-preview:hover .slopeframe-device--home,
 .slopeframe-preview:focus-visible .slopeframe-device--home,
 .slopeframe-preview.is-previewing .slopeframe-device--home {
-  animation: slopeframe-home-unfold 2.2s var(--ease) both;
+  animation: slopeframe-home-unfold 1.7s var(--ease) both;
 }
 
 .slopeframe-preview:hover .slopeframe-device--booking,
 .slopeframe-preview:focus-visible .slopeframe-device--booking,
 .slopeframe-preview.is-previewing .slopeframe-device--booking {
-  animation: slopeframe-booking-unfold 2.2s var(--ease) both;
+  animation: slopeframe-booking-unfold 1.7s var(--ease) both;
 }
 
 .slopeframe-preview:hover .slopeframe-device--match,
 .slopeframe-preview:focus-visible .slopeframe-device--match,
 .slopeframe-preview.is-previewing .slopeframe-device--match {
-  animation: slopeframe-match-unfold 2.2s var(--ease) both;
+  animation: slopeframe-match-unfold 1.7s var(--ease) both;
 }
 
 @keyframes slopeframe-home-unfold {
   0%, 100% { transform: translateX(-50%) rotate(-1deg) scale(.96); }
-  42%, 68% { transform: translateX(-50%) translateY(-1rem) rotate(0) scale(.84); }
+  36%, 72% { transform: translateX(-50%) translateY(-.35rem) rotate(0) scale(.91); }
 }
 
 @keyframes slopeframe-booking-unfold {
@@ -1188,9 +1192,9 @@ h2 em {
     opacity: .76;
     transform: translateX(-68%) rotate(-6deg) scale(.88);
   }
-  42%, 68% {
+  36%, 72% {
     opacity: 1;
-    transform: translateX(-165%) rotate(-3deg) scale(.8);
+    transform: translateX(-145%) rotate(-2.5deg) scale(.84);
   }
 }
 
@@ -1199,9 +1203,9 @@ h2 em {
     opacity: .72;
     transform: translateX(-32%) rotate(6deg) scale(.88);
   }
-  42%, 68% {
+  36%, 72% {
     opacity: 1;
-    transform: translateX(65%) rotate(3deg) scale(.8);
+    transform: translateX(45%) rotate(2.5deg) scale(.84);
   }
 }
 
@@ -1227,7 +1231,7 @@ h2 em {
 
 @keyframes slopeframe-home-unfold-mobile {
   0%, 100% { transform: translateX(-50%) rotate(-1deg) scale(.96); }
-  42%, 68% { transform: translateX(-50%) translateY(-.4rem) rotate(0) scale(.62); }
+  36%, 72% { transform: translateX(-50%) translateY(-.2rem) rotate(0) scale(.88); }
 }
 
 @keyframes slopeframe-booking-unfold-mobile {
@@ -1235,9 +1239,9 @@ h2 em {
     opacity: .76;
     transform: translateX(-68%) rotate(-6deg) scale(.88);
   }
-  42%, 68% {
+  36%, 72% {
     opacity: 1;
-    transform: translateX(-105%) rotate(-2deg) scale(.58);
+    transform: translateX(-112%) rotate(-2deg) scale(.78);
   }
 }
 
@@ -1246,9 +1250,9 @@ h2 em {
     opacity: .72;
     transform: translateX(-32%) rotate(6deg) scale(.88);
   }
-  42%, 68% {
+  36%, 72% {
     opacity: 1;
-    transform: translateX(5%) rotate(2deg) scale(.58);
+    transform: translateX(12%) rotate(2deg) scale(.78);
   }
 }
 
@@ -1284,7 +1288,7 @@ h2 em {
 .slopeframe-preview:hover .project-peek,
 .slopeframe-preview:focus-visible .project-peek,
 .slopeframe-preview.is-previewing .project-peek {
-  animation: slopeframe-peek-unfold 2.8s var(--ease) both;
+  animation: slopeframe-peek-unfold 2s var(--ease) both;
 }
 
 @keyframes slopeframe-peek-unfold {
@@ -1497,7 +1501,9 @@ h2 em {
   font: inherit;
   text-align: left;
   overflow: hidden;
-  transition: background .35s ease, color .35s ease;
+  touch-action: manipulation;
+  transition: background .28s ease, color .28s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .project-row__index {
@@ -1561,10 +1567,10 @@ h2 em {
   transform: translateY(.6rem);
   transform-origin: 50% 0;
   transition:
-    max-height .62s var(--ease),
-    margin .62s var(--ease),
-    opacity .38s ease,
-    transform .62s var(--ease);
+    max-height .44s var(--ease),
+    margin .44s var(--ease),
+    opacity .26s ease,
+    transform .44s var(--ease);
 }
 
 .project-row__preview-media {
@@ -1627,6 +1633,10 @@ h2 em {
   margin-top: .9rem;
   opacity: 1;
   transform: none;
+}
+
+.project-row.is-previewing {
+  background: rgba(242, 239, 231, .055);
 }
 
 .project-row.is-previewing .project-row__preview img,
@@ -1774,17 +1784,17 @@ body.dialog-open {
 }
 
 .project-dialog__content {
-  padding: clamp(2rem, 6vw, 5rem) clamp(1.1rem, 5vw, 5rem) clamp(3rem, 8vw, 7rem);
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.1rem, 5vw, 5rem) clamp(3rem, 6vw, 5rem);
 }
 
 .case-note {
   display: grid;
-  gap: clamp(2.75rem, 7vw, 5.5rem);
+  gap: clamp(2.2rem, 5vw, 4rem);
 }
 
 .case-note__hero {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.1rem;
 }
 
 .case-note__hero > p {
@@ -1797,8 +1807,8 @@ body.dialog-open {
 
 .case-note__hero h2 {
   max-width: 10ch;
-  font-size: clamp(3.5rem, 16vw, 8.5rem);
-  line-height: .82;
+  font-size: clamp(3.25rem, 13vw, 7rem);
+  line-height: .86;
 }
 
 .case-note__hero > div {
@@ -1873,7 +1883,7 @@ body.dialog-open {
 
 .case-phone-rail {
   display: grid;
-  grid-auto-columns: min(20rem, calc(100vw - 3rem));
+  grid-auto-columns: min(22rem, calc(100vw - 2.2rem));
   grid-auto-flow: column;
   gap: 1.25rem;
   overflow-x: auto;
@@ -1882,11 +1892,15 @@ body.dialog-open {
   scroll-padding-inline: var(--page-pad);
   scroll-snap-type: x mandatory;
   scrollbar-color: var(--line) transparent;
+  overscroll-behavior-inline: contain;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .case-phone-rail figure {
   margin: 0;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .case-phone-rail img {
@@ -2331,6 +2345,80 @@ body.dialog-open {
   color: var(--muted);
 }
 
+@media (max-width: 699px) {
+  .project-dialog {
+    width: calc(100% - .4rem);
+    max-height: calc(100dvh - .4rem);
+  }
+
+  .project-dialog__shell {
+    max-height: calc(100dvh - .4rem);
+  }
+
+  .project-dialog__header {
+    min-height: 3.25rem;
+    padding: 0 .9rem;
+  }
+
+  .project-dialog__content {
+    padding: 1.1rem .8rem 2.5rem;
+  }
+
+  .case-note {
+    gap: 1.9rem;
+  }
+
+  .case-note__hero {
+    gap: .8rem;
+  }
+
+  .case-note__hero h2 {
+    font-size: clamp(3rem, 15vw, 4.5rem);
+    line-height: .9;
+  }
+
+  .case-note__hero strong {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+    line-height: 1.04;
+  }
+
+  .case-note__hero span,
+  .case-note__body p {
+    line-height: 1.6;
+  }
+
+  .case-note__facts div {
+    padding: .9rem 0;
+  }
+
+  .case-phone-rail {
+    grid-auto-columns: calc(100vw - 1.85rem);
+    gap: .8rem;
+    padding: .25rem .8rem .9rem;
+    margin: 0 -.8rem;
+    scroll-padding-inline: .8rem;
+    scrollbar-width: none;
+  }
+
+  .case-phone-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .case-phone-rail img {
+    border-radius: 1.15rem;
+    box-shadow: 0 .85rem 1.75rem rgba(16, 16, 15, .09);
+  }
+
+  .case-phone-rail figcaption {
+    margin-top: .55rem;
+  }
+
+  .project-row.is-previewing .project-row__preview {
+    max-height: 18rem;
+    margin-top: .7rem;
+  }
+}
+
 .js .reveal {
   opacity: 0;
   transform: translateY(1.5rem);
@@ -2625,7 +2713,7 @@ body.dialog-open {
   }
 
   .slopeframe-preview {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
   }
 
   .slopeframe-device-stack {
@@ -2710,7 +2798,7 @@ body.dialog-open {
   }
 
   .case-note__hero--compact h2 {
-    font-size: clamp(6rem, 10vw, 9rem);
+    font-size: clamp(5.5rem, 8vw, 7.5rem);
   }
 
   .case-note__facts {
@@ -2740,7 +2828,7 @@ body.dialog-open {
 
   .case-phone-rail {
     grid-template-columns: none;
-    grid-auto-columns: clamp(20rem, 36vw, 26rem);
+    grid-auto-columns: clamp(22rem, 36vw, 27.5rem);
     grid-auto-flow: column;
     gap: clamp(1.25rem, 2vw, 1.75rem);
     overflow-x: auto;

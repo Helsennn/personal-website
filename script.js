@@ -30,7 +30,7 @@ let modeSettleTimer;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 const touchFirstMedia = window.matchMedia('(hover: none), (pointer: coarse)');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const modeSettleDuration = reduceMotion ? 0 : 680;
+const modeSettleDuration = reduceMotion ? 0 : 820;
 
 function setPortraitDepth(x = 0, y = 0) {
   if (!identityStage || reduceMotion) return;
@@ -322,13 +322,11 @@ projectGalleries.forEach((gallery) => {
 
 let projectReturnFocus = null;
 let mediaReturnFocus = null;
-let selectedMobileMedia = null;
 let touchProjectPreview = null;
-let touchProjectPreviewTimer;
-let touchProjectAnimationTimer;
 
 function setProjectPreviewActive(opener, active) {
   opener?.classList.toggle('is-previewing', active);
+  opener?.setAttribute('aria-expanded', String(active));
   const previewVideo = opener?.querySelector('.project-row__preview video');
 
   if (!(previewVideo instanceof HTMLVideoElement)) return;
@@ -395,7 +393,6 @@ function openProjectDialog(projectKey, trigger) {
   if (!(template instanceof HTMLTemplateElement)) return;
 
   projectReturnFocus = trigger || document.activeElement;
-  selectedMobileMedia = null;
   projectDialogContent.replaceChildren(template.content.cloneNode(true));
   document.body.classList.add('dialog-open');
 
@@ -418,29 +415,12 @@ projectOpeners.forEach((opener) => {
     ) && event.detail !== 0 && !reduceMotion;
 
     if (usesTouchPreview && touchProjectPreview !== opener) {
-      window.clearTimeout(touchProjectPreviewTimer);
-      window.clearTimeout(touchProjectAnimationTimer);
-      setProjectPreviewActive(touchProjectPreview, false);
+      if (touchProjectPreview) setProjectPreviewActive(touchProjectPreview, false);
       touchProjectPreview = opener;
-      setProjectPreviewActive(opener, false);
-      void opener.offsetWidth;
       setProjectPreviewActive(opener, true);
-
-      if (opener.classList.contains('slopeframe-preview')) {
-        touchProjectAnimationTimer = window.setTimeout(() => {
-          setProjectPreviewActive(opener, false);
-        }, 3000);
-      }
-
-      touchProjectPreviewTimer = window.setTimeout(() => {
-        setProjectPreviewActive(opener, false);
-        touchProjectPreview = null;
-      }, opener.classList.contains('project-row') ? 10000 : 7000);
       return;
     }
 
-    window.clearTimeout(touchProjectPreviewTimer);
-    window.clearTimeout(touchProjectAnimationTimer);
     setProjectPreviewActive(opener, false);
     touchProjectPreview = null;
     openProjectDialog(opener.dataset.projectOpen, opener);
@@ -450,20 +430,7 @@ projectOpeners.forEach((opener) => {
 projectDialogContent?.addEventListener('click', (event) => {
   const mediaCard = event.target.closest('[data-case-image]');
   if (!(mediaCard instanceof HTMLButtonElement)) return;
-
-  const usesTouchFirstMedia = touchFirstMedia.matches || window.innerWidth < 700;
-  if (!usesTouchFirstMedia || event.detail === 0 || selectedMobileMedia === mediaCard) {
-    openMediaViewer(mediaCard);
-    return;
-  }
-
-  projectDialogContent.querySelectorAll('[data-case-image].is-active').forEach((card) => {
-    card.classList.remove('is-active');
-    card.setAttribute('aria-pressed', 'false');
-  });
-  mediaCard.classList.add('is-active');
-  mediaCard.setAttribute('aria-pressed', 'true');
-  selectedMobileMedia = mediaCard;
+  openMediaViewer(mediaCard);
 });
 
 projectDialogClose?.addEventListener('click', closeProjectDialog);

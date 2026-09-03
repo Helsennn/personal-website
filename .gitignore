@@ -9,3 +9,4 @@ WEBSITE_CONTENT_AND_DIRECTION.md
 
 # Keep web-optimized JPG portraits in Git; ignore large source PNGs.
 assets/images/*.png
+!assets/images/haoze-portrait-designer-closed-eyes-v10.png
