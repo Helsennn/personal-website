@@ -1110,8 +1110,8 @@ h2 em {
   position: absolute;
   z-index: 2;
   display: block;
-  top: 5%;
-  bottom: -3%;
+  top: 2%;
+  bottom: 1%;
   left: 50%;
   width: 64%;
   filter: drop-shadow(0 1.3rem 1.4rem rgba(16, 16, 15, .2));
