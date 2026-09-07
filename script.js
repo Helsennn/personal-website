@@ -497,7 +497,9 @@ function closeMediaViewer() {
 }
 
 function renderMedia(index) {
+  const previousIndex = mediaIndex;
   mediaIndex = Math.min(mediaCards.length - 1, Math.max(0, index));
+  if (mediaViewer?.open && previousIndex === mediaIndex) return;
   const trigger = mediaCards[mediaIndex];
   const sourceImage = trigger?.querySelector('img');
   if (!mediaViewer || !mediaViewerImage || !sourceImage) return;
@@ -512,7 +514,11 @@ function renderMedia(index) {
   mediaViewer.querySelector('[data-media-status]').textContent = `${String(mediaIndex + 1).padStart(2, '0')} / ${String(mediaCards.length).padStart(2, '0')}`;
   if (!reduceMotion && mediaViewer.open) {
     mediaViewerImage.getAnimations().forEach((animation) => animation.cancel());
-    mediaViewerImage.animate([{ opacity: .5 }, { opacity: 1 }], { duration: 160 });
+    const direction = mediaIndex > previousIndex ? 1 : -1;
+    mediaViewerImage.animate([
+      { opacity: .35, translate: `${direction * 12}px 0` },
+      { opacity: 1, translate: '0 0' }
+    ], { duration: 220, easing: 'cubic-bezier(.22, 1, .36, 1)' });
   }
 }
 
@@ -685,21 +691,30 @@ projectDialog?.addEventListener('close', () => {
 
 publicationDetails.forEach((details) => {
   const summary = details.querySelector('summary');
+  const body = details.querySelector('.publication-body');
   let animation;
+  let bodyAnimation;
   summary.addEventListener('click', (event) => {
     if (reduceMotion) return;
     event.preventDefault();
     const from = details.getBoundingClientRect().height;
+    const bodyOpacity = details.open ? getComputedStyle(body).opacity : '0';
     const opening = details.dataset.expanding ? details.dataset.expanding === 'false' : !details.open;
     animation?.cancel();
+    bodyAnimation?.cancel();
     details.dataset.expanding = String(opening);
     details.style.height = '';
     details.open = true;
     const to = opening ? details.getBoundingClientRect().height : summary.getBoundingClientRect().height;
+    bodyAnimation = body.animate([
+      { opacity: bodyOpacity },
+      { opacity: opening ? 1 : 0 }
+    ], { duration: opening ? 220 : 140, easing: 'ease-out', fill: 'forwards' });
     animation = details.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 260, easing: 'cubic-bezier(.22, 1, .36, 1)' });
     animation.onfinish = () => {
       details.open = opening;
       delete details.dataset.expanding;
+      bodyAnimation?.cancel();
       animation = null;
     };
   });
@@ -776,9 +791,10 @@ motionPreference.addEventListener('change', (event) => {
   reduceMotion = event.matches;
   if (reduceMotion) {
     setPortraitDepth();
-    document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-visible'));
+    document.querySelectorAll('.reveal, [data-entrance]').forEach((element) => element.classList.add('is-visible'));
     document.querySelectorAll('.project-row video').forEach((video) => video.pause());
-    publicationDetails.forEach((details) => details.getAnimations().forEach((animation) => animation.finish()));
+    publicationDetails.forEach((details) => details.getAnimations({ subtree: true }).forEach((animation) => animation.finish()));
+    mediaViewerImage?.getAnimations().forEach((animation) => animation.finish());
   }
 });
 
@@ -800,7 +816,26 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) document.querySelectorAll('video').forEach((video) => video.pause());
 });
 
-const reveals = document.querySelectorAll('.reveal');
+// Reveal individual reading units as they enter the viewport. A short stagger
+// guides the eye without making a whole section wait or replay on the way back.
+const entranceGroups = [
+  ['.hero-heading', '.eyebrow, .headline-word, .hero-intro'],
+  ['.intro-grid', '.section-number, .intro-statement, .intro-notes > div'],
+  ['.section-heading', ':scope > *'],
+  ['.featured-project', '.featured-visual, .featured-project__copy'],
+  ['.project-index', '.project-index__label, .project-row']
+];
+entranceGroups.forEach(([groupSelector, itemSelector]) => {
+  document.querySelectorAll(groupSelector).forEach((group) => {
+    group.classList.remove('reveal');
+    group.querySelectorAll(itemSelector).forEach((item, index) => {
+      item.dataset.entrance = '';
+      item.style.setProperty('--entrance-order', String(Math.min(index, 3)));
+    });
+  });
+});
+
+const reveals = document.querySelectorAll('.reveal, [data-entrance]');
 
 if ('IntersectionObserver' in window && !reduceMotion) {
   const revealObserver = new IntersectionObserver((entries, observer) => {

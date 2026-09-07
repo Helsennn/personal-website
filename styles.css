@@ -2535,6 +2535,65 @@ body.dialog-open {
   transform: translateY(0);
 }
 
+.js [data-entrance]:not(.is-visible) {
+  opacity: 0;
+}
+
+.js [data-entrance].is-visible {
+  animation: content-arrive 460ms var(--ease) calc(var(--entrance-order, 0) * 40ms) backwards;
+}
+
+/* Individual translate leaves the portrait and title's interactive transforms
+   intact. Backwards fill releases opacity again for hover and pressed states. */
+@keyframes content-arrive {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.js [data-entrance]:focus-within {
+  animation: none;
+}
+
+.js [data-entrance]:not(.is-visible):focus-within {
+  opacity: 1;
+}
+
+.project-dialog[open] .case-note__hero > * {
+  animation: content-arrive 340ms var(--ease) 40ms backwards;
+}
+
+.project-dialog[open] .case-note__hero > :nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.project-dialog[open] .case-note__hero > :nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.project-dialog.is-closing .case-note {
+  opacity: 0;
+  translate: 0 4px;
+  transition: opacity 120ms ease, translate 140ms ease;
+}
+
+@media (max-width: 919px) {
+  .site-nav a {
+    opacity: 0;
+    translate: 0 10px;
+    transition: opacity 140ms ease, translate 180ms var(--ease);
+  }
+
+  .site-nav.is-open a {
+    opacity: 1;
+    translate: 0 0;
+    transition-duration: 220ms, 300ms;
+    transition-delay: 40ms;
+  }
+
+  .site-nav.is-open a:nth-child(2) { transition-delay: 75ms; }
+  .site-nav.is-open a:nth-child(3) { transition-delay: 110ms; }
+}
+
 .practice-marquee.is-offscreen .practice-marquee__track,
 .page-hidden .practice-marquee__track {
   animation-play-state: paused;
@@ -3008,16 +3067,26 @@ body.dialog-open {
   *,
   *::before,
   *::after {
+    animation-delay: 0ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
   }
 
   .js .reveal {
     opacity: 1;
     transform: none;
   }
+
+  .js [data-entrance],
+  .project-dialog[open] .case-note__hero > * {
+    animation: none !important;
+    translate: none;
+  }
+
+  .js [data-entrance]:not(.is-visible) { opacity: 1; }
 
   .practice-marquee__track {
     animation: none !important;
