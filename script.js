@@ -830,7 +830,7 @@ entranceGroups.forEach(([groupSelector, itemSelector]) => {
     group.classList.remove('reveal');
     group.querySelectorAll(itemSelector).forEach((item, index) => {
       item.dataset.entrance = '';
-      item.style.setProperty('--entrance-order', String(Math.min(index, 3)));
+      item.style.setProperty('--entrance-order', String(Math.min(index, group === kineticTitle ? 4 : 3)));
     });
   });
 });
@@ -838,15 +838,51 @@ entranceGroups.forEach(([groupSelector, itemSelector]) => {
 const reveals = document.querySelectorAll('.reveal, [data-entrance]');
 
 if ('IntersectionObserver' in window && !reduceMotion) {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
+  const pendingReveals = new Set();
+  let revealFrame = 0;
+  let titleReady = !document.fonts || document.fonts.status === 'loaded';
+
+  const flushReveals = () => {
+    if (document.hidden || revealFrame) return;
+    revealFrame = requestAnimationFrame(() => {
+      revealFrame = 0;
+      if (document.hidden) return;
+      pendingReveals.forEach((element) => {
+        if (!titleReady && kineticTitle?.contains(element)) return;
+        element.classList.add('is-visible');
+        revealObserver.unobserve(element);
+        pendingReveals.delete(element);
+      });
     });
-  }, { threshold: 0, rootMargin: '0px 0px 24px 0px' });
+  };
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting || entry.intersectionRatio < .08) {
+        pendingReveals.delete(entry.target);
+        return;
+      }
+      pendingReveals.add(entry.target);
+    });
+    flushReveals();
+  }, { threshold: .08, rootMargin: '0px 0px -32px 0px' });
 
   reveals.forEach((element) => revealObserver.observe(element));
+  document.addEventListener('visibilitychange', flushReveals);
+
+  // Give the display font a short chance to arrive, without holding up the
+  // page on a slow connection. Background tabs keep their entrance until seen.
+  if (!titleReady) {
+    let fontFallback;
+    Promise.race([
+      document.fonts.ready,
+      new Promise((resolve) => { fontFallback = setTimeout(resolve, 450); })
+    ]).then(() => {
+      clearTimeout(fontFallback);
+      titleReady = true;
+      flushReveals();
+    });
+  }
 } else {
   reveals.forEach((element) => element.classList.add('is-visible'));
 }

@@ -2540,18 +2540,32 @@ body.dialog-open {
 }
 
 .js [data-entrance].is-visible {
-  animation: content-arrive 460ms var(--ease) calc(var(--entrance-order, 0) * 40ms) backwards;
+  animation: content-arrive 640ms var(--ease) calc(var(--entrance-order, 0) * 65ms) backwards;
+}
+
+.js .hero-heading [data-entrance].is-visible {
+  animation-duration: 800ms;
+  animation-delay: calc(80ms + var(--entrance-order, 0) * 130ms);
+}
+
+.js .hero-heading .headline-word.is-visible {
+  animation-name: title-arrive;
 }
 
 /* Individual translate leaves the portrait and title's interactive transforms
    intact. Backwards fill releases opacity again for hover and pressed states. */
 @keyframes content-arrive {
-  from { opacity: 0; translate: 0 12px; }
+  from { opacity: 0; translate: 0 24px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes title-arrive {
+  from { opacity: 0; translate: 0 .34em; }
   to { opacity: 1; translate: 0 0; }
 }
 
 .js [data-entrance]:focus-within {
-  animation: none;
+  animation: none !important;
 }
 
 .js [data-entrance]:not(.is-visible):focus-within {
