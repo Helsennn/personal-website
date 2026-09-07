@@ -1,4 +1,5 @@
 .DS_Store
+output/playwright/
 
 # Previous resume artifacts are kept locally but should not ship with the website.
 *.docx

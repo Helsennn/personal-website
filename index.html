@@ -112,6 +112,11 @@
 
           <figure
             class="portrait-stage"
+            role="slider"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="50"
+            aria-valuetext="Marketer and Designer"
             tabindex="0"
             aria-label="Interactive portrait. Move across the portrait, use left and right arrow keys, tap the labels, or swipe to switch between Marketer and Designer."
             data-portrait
@@ -299,10 +304,12 @@
             <p>An independent practice connecting market research, AI search, and design.</p>
             <small>Founder &amp; Principal · Ongoing</small>
             <span class="project-row__preview" aria-hidden="true">
-              <span class="project-row__preview-media">
-                <img src="assets/images/nehzova-home.jpg" alt="" loading="lazy">
+              <span class="project-row__preview-inner">
+                <span class="project-row__preview-media">
+                  <img src="assets/images/nehzova-home.jpg" alt="" loading="lazy">
+                </span>
+                <span class="project-row__preview-caption"><b>Nehzova Group</b><i>Tap again to open note</i></span>
               </span>
-              <span class="project-row__preview-caption"><b>Nehzova Group</b><i>Tap again to open note</i></span>
             </span>
             <span class="project-row__arrow" aria-hidden="true">↗</span>
           </button>
@@ -313,10 +320,12 @@
             <p>A weekly performance workspace that brings filters, KPI signals, and drill-down analysis into one flow.</p>
             <small>Product + data operations</small>
             <span class="project-row__preview" aria-hidden="true">
-              <span class="project-row__preview-media">
-                <img src="assets/images/report-cockpit-overview.jpg" alt="" loading="lazy">
+              <span class="project-row__preview-inner">
+                <span class="project-row__preview-media">
+                  <img src="assets/images/report-cockpit-overview.jpg" alt="" loading="lazy">
+                </span>
+                <span class="project-row__preview-caption"><b>Live workflow</b><i>Tap again to open note</i></span>
               </span>
-              <span class="project-row__preview-caption"><b>Live workflow</b><i>Tap again to open note</i></span>
             </span>
             <span class="project-row__arrow" aria-hidden="true">↗</span>
           </button>
@@ -327,10 +336,12 @@
             <p>A game and HCI concept for making city loneliness feel less immovable.</p>
             <small>Game design + CASA</small>
             <span class="project-row__preview" aria-hidden="true">
-              <span class="project-row__preview-media">
-                <img src="assets/images/mydreamland-city.jpg" alt="" loading="lazy">
+              <span class="project-row__preview-inner">
+                <span class="project-row__preview-media">
+                  <img src="assets/images/mydreamland-city.jpg" alt="" loading="lazy">
+                </span>
+                <span class="project-row__preview-caption"><b>A city made social</b><i>Tap again to open note</i></span>
               </span>
-              <span class="project-row__preview-caption"><b>A city made social</b><i>Tap again to open note</i></span>
             </span>
             <span class="project-row__arrow" aria-hidden="true">↗</span>
           </button>
@@ -341,10 +352,12 @@
             <p>A trailer-led microsite concept that turns a launch countdown into anticipation.</p>
             <small>Interactive web + motion</small>
             <span class="project-row__preview project-row__preview--video" aria-hidden="true">
-              <span class="project-row__preview-media">
-                <video src="assets/media/fc25-teaser.mov" muted loop playsinline preload="metadata"></video>
+              <span class="project-row__preview-inner">
+                <span class="project-row__preview-media">
+                  <video src="assets/media/fc25-teaser.mov" muted loop playsinline preload="metadata"></video>
+                </span>
+                <span class="project-row__preview-caption"><b>Motion study</b><i>Tap again to open note</i></span>
               </span>
-              <span class="project-row__preview-caption"><b>Motion study</b><i>Tap again to open note</i></span>
             </span>
             <span class="project-row__arrow" aria-hidden="true">↗</span>
           </button>
@@ -362,9 +375,16 @@
       </dialog>
 
       <dialog class="media-viewer" aria-label="Expanded project image" data-media-viewer>
-        <button class="media-viewer__close" type="button" data-media-viewer-close>
-          Close <span aria-hidden="true">×</span>
-        </button>
+        <div class="media-viewer__toolbar">
+          <div class="media-viewer__navigation" aria-label="Image navigation">
+            <button type="button" aria-label="Previous image" data-media-prev>←</button>
+            <span aria-live="polite" data-media-status>01 / 01</span>
+            <button type="button" aria-label="Next image" data-media-next>→</button>
+          </div>
+          <button class="media-viewer__close" type="button" data-media-viewer-close>
+            Close <span aria-hidden="true">×</span>
+          </button>
+        </div>
         <figure>
           <img alt="" data-media-viewer-image />
           <figcaption data-media-viewer-caption></figcaption>
