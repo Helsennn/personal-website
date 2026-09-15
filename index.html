@@ -28,7 +28,7 @@
       href="assets/images/haoze-portrait-marketer-cutout.jpg"
       fetchpriority="high"
     />
-    <link rel="stylesheet" href="styles.css?v=20260907-motion-2" />
+    <link rel="stylesheet" href="styles.css?v=20260915-warm-type" />
     <script>document.documentElement.classList.add('js');</script>
   </head>
 
@@ -36,6 +36,7 @@
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" data-header>
+      <span class="reading-progress" aria-hidden="true" data-reading-progress></span>
       <a class="wordmark" href="#top" aria-label="Haoze Ni, home">HN<span>.</span></a>
 
       <button
@@ -183,7 +184,6 @@
               <dt><span>01</span><small>/ Education</small></dt>
               <dd class="education-list">
                 <span>FH Technikum Wien</span>
-                <span>Sichuan University</span>
                 <span>Syracuse University</span>
                 <span>Boston University</span>
               </dd>
@@ -199,8 +199,9 @@
           </dl>
         </div>
 
-        <div class="practice-marquee" aria-hidden="true">
-          <div class="practice-marquee__track">
+        <div class="practice-marquee" role="region" aria-label="Areas of interest">
+          <span class="sr-only">Marketing, design, Human–AI interaction, applied AI, customer acquisition, and SEO.</span>
+          <div class="practice-marquee__track" aria-hidden="true">
             <div class="practice-marquee__group">
               <span>Marketing</span><i>•</i><span>Design</span><i>•</i><span>Human–AI Interaction</span><i>•</i>
               <span>Applied AI</span><i>•</i><span>Customer Acquisition</span><i>•</i><span>SEO</span><i>•</i>
@@ -210,6 +211,7 @@
               <span>Applied AI</span><i>•</i><span>Customer Acquisition</span><i>•</i><span>SEO</span><i>•</i>
             </div>
           </div>
+          <button class="practice-marquee__toggle" type="button" aria-label="Pause moving topics" aria-pressed="false" data-marquee-toggle><span aria-hidden="true">Ⅱ</span></button>
         </div>
 
       </section>
@@ -296,7 +298,7 @@
         </div>
 
         <div class="project-index reveal">
-          <p class="project-index__label">More project notes</p>
+          <p class="project-index__label"><span>More project notes</span><span class="project-index__hint" data-project-hint>Hover to preview · Click to read</span></p>
 
           <button class="project-row" type="button" aria-expanded="false" data-project-open="nehzova">
             <span class="project-row__index">03</span>
@@ -354,7 +356,8 @@
             <span class="project-row__preview project-row__preview--video" aria-hidden="true">
               <span class="project-row__preview-inner">
                 <span class="project-row__preview-media">
-                  <video src="assets/media/fc25-teaser.mov" muted loop playsinline preload="metadata"></video>
+                  <span class="teaser-poster"><span>Unofficial web concept</span><strong>FC25</strong><em>A moment before kickoff.</em></span>
+                  <video src="assets/media/fc25-teaser.mov" muted loop playsinline preload="none" data-optional-video></video>
                 </span>
                 <span class="project-row__preview-caption"><b>Motion study</b><i>Tap again to open note</i></span>
               </span>
@@ -552,7 +555,7 @@
             <h2>FC25 Teaser</h2>
             <div><strong>A launch page should create a feeling before it explains everything.</strong><span>An unofficial teaser-site concept using cinematic pacing and progressive disclosure to warm up an audience before release.</span></div>
           </header>
-          <figure class="case-cinema case-cinema--video"><video src="assets/media/fc25-teaser.mov" controls muted playsinline preload="metadata" aria-label="FC25 teaser concept video"></video><figcaption>Motion study used as the site’s opening signal</figcaption></figure>
+          <figure class="case-cinema case-cinema--video"><div class="optional-video"><div class="teaser-poster"><span>Unofficial web concept</span><strong>FC25</strong><em>A moment before kickoff.</em><small data-video-message>Trailer preview is currently unavailable.</small></div><video src="assets/media/fc25-teaser.mov" controls muted playsinline preload="metadata" aria-label="FC25 teaser concept video" data-optional-video></video></div><figcaption>Trailer-led experience / launch concept</figcaption></figure>
           <dl class="case-note__facts">
             <div><dt>Role</dt><dd>Concept, visual direction, interaction, and motion</dd></div>
             <div><dt>Experience</dt><dd>Trailer-first entry, timed reveals, and restrained launch information</dd></div>
@@ -678,6 +681,6 @@
       <a href="#top">Back to top ↑</a>
     </footer>
 
-    <script src="script.js?v=20260907-motion-2"></script>
+    <script src="script.js?v=20260915-polish"></script>
   </body>
 </html>

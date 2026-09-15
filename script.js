@@ -19,6 +19,9 @@ const mediaViewerImage = document.querySelector('[data-media-viewer-image]');
 const mediaViewerCaption = document.querySelector('[data-media-viewer-caption]');
 const mediaViewerClose = document.querySelector('[data-media-viewer-close]');
 const publicationDetails = [...document.querySelectorAll('[data-publication-accordion] details')];
+const readingProgress = document.querySelector('[data-reading-progress]');
+const marquee = document.querySelector('.practice-marquee');
+const marqueeToggle = document.querySelector('[data-marquee-toggle]');
 
 let activeMode = 'marketer';
 let portraitGesture = null;
@@ -124,7 +127,9 @@ function setBlend(marketerPercentage, announce = false) {
       ? boundedPercentage / 100
       : (100 - boundedPercentage) / 100;
     button.setAttribute('aria-pressed', 'false');
-    button.style.opacity = String(strength);
+    // Keep both labels readable around the midpoint, while still fading out
+    // the opposite identity completely at either end of the portrait.
+    button.style.opacity = String(1 - (1 - strength) ** 2);
   });
 
   if (modeLabel) modeLabel.textContent = 'Marketer / Designer';
@@ -476,9 +481,47 @@ document.querySelectorAll('.slopeframe-preview').forEach((cover) => {
   if (touchFirstMedia.matches) cover.querySelector('.featured-visual__top i').textContent = 'Tap to preview ↗';
 });
 
+function prepareOptionalVideos(root) {
+  root.querySelectorAll('[data-optional-video]').forEach((video) => {
+    video.addEventListener('loadeddata', () => video.classList.add('is-ready'), { once: true });
+    video.addEventListener('error', () => video.remove(), { once: true });
+  });
+}
+prepareOptionalVideos(document);
+
+const updatePreviewHints = () => {
+  const isTouch = touchFirstMedia.matches || window.innerWidth < 700;
+  const hint = document.querySelector('[data-project-hint]');
+  if (hint) hint.textContent = isTouch ? 'Tap to preview · Tap again to read' : 'Hover to preview · Click to read';
+  projectRows.forEach((row) => {
+    const caption = row.querySelector('.project-row__preview-caption i');
+    if (caption) caption.textContent = isTouch ? 'Tap again to read ↗' : 'Read project note ↗';
+  });
+};
+touchFirstMedia.addEventListener('change', updatePreviewHints);
+window.addEventListener('resize', frameLatest(updatePreviewHints), { passive: true });
+updatePreviewHints();
+
+// Decode nearby preview images before interaction, not every image on load.
+if ('IntersectionObserver' in window) {
+  const previewObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(({ target, isIntersecting }) => {
+      if (!isIntersecting) return;
+      const image = target.querySelector('.project-row__preview img');
+      if (image) {
+        image.loading = 'eager';
+        image.decoding = 'async';
+        image.decode?.().catch(() => {});
+      }
+      observer.unobserve(target);
+    });
+  }, { rootMargin: '320px 0px' });
+  projectRows.forEach((row) => previewObserver.observe(row));
+}
+
 projectRows.forEach((row) => {
-  row.addEventListener('pointerenter', () => {
-    if (!finePointer.matches) return;
+  row.addEventListener('pointerenter', (event) => {
+    if (!finePointer.matches || event.pointerType !== 'mouse') return;
     const previewVideo = row.querySelector('.project-row__preview video');
     if (!reduceMotion) previewVideo?.play().catch(() => {});
   });
@@ -619,6 +662,7 @@ function openProjectDialog(projectKey, trigger) {
 
   projectReturnFocus = trigger || document.activeElement;
   projectDialogContent.replaceChildren(template.content.cloneNode(true));
+  prepareOptionalVideos(projectDialogContent);
   document.body.classList.add('dialog-open');
   lockScroll('project');
   projectDialog.setAttribute('aria-labelledby', 'active-project-title');
@@ -777,6 +821,9 @@ const sectionLinks = [...document.querySelectorAll('.site-nav a')];
 const navSections = sectionLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean).sort((a, b) => a.offsetTop - b.offsetTop);
 const updateNavigation = frameLatest(() => {
   if (scrollLocks.size) return;
+  const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = scrollRange > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollRange)) : 0;
+  readingProgress?.style.setProperty('--reading-progress', progress.toFixed(4));
   const active = navSections.filter((section) => section.getBoundingClientRect().top <= window.innerHeight * .35).at(-1);
   sectionLinks.forEach((link) => {
     if (active && link.hash === `#${active.id}`) link.setAttribute('aria-current', 'location');
@@ -785,7 +832,15 @@ const updateNavigation = frameLatest(() => {
 });
 window.addEventListener('scroll', updateNavigation, { passive: true });
 window.addEventListener('resize', updateNavigation, { passive: true });
+if ('ResizeObserver' in window) new ResizeObserver(updateNavigation).observe(document.querySelector('main'));
 updateNavigation();
+
+marqueeToggle?.addEventListener('click', () => {
+  const paused = marquee.classList.toggle('is-paused');
+  marqueeToggle.setAttribute('aria-pressed', String(paused));
+  marqueeToggle.setAttribute('aria-label', paused ? 'Resume moving topics' : 'Pause moving topics');
+  marqueeToggle.querySelector('span').textContent = paused ? '▶' : 'Ⅱ';
+});
 
 motionPreference.addEventListener('change', (event) => {
   reduceMotion = event.matches;
