@@ -12,6 +12,8 @@ const projectGalleries = [...document.querySelectorAll('[data-project-gallery]')
 const projectDialog = document.querySelector('[data-project-dialog]');
 const projectDialogContent = document.querySelector('[data-project-content]');
 const projectDialogClose = document.querySelector('[data-project-close]');
+const projectJump = document.querySelector('[data-project-jump]');
+const projectShell = projectDialog?.querySelector('.project-dialog__shell');
 const projectOpeners = [...document.querySelectorAll('[data-project-open]')];
 const projectRows = [...document.querySelectorAll('.project-row')];
 const mediaViewer = document.querySelector('[data-media-viewer]');
@@ -365,6 +367,7 @@ let projectReturnFocus = null;
 let mediaReturnFocus = null;
 let mediaCards = [];
 let mediaIndex = 0;
+let mediaReturnScroll = 0;
 let disposeProjectRails = () => {};
 const scrollLocks = new Set();
 let savedScrollY = 0;
@@ -418,15 +421,18 @@ function dismissDialog(dialog) {
 // A drag on a gallery or cover must never become a click on its image.
 function preventDragClick(element) {
   let origin;
+  let dragged = false;
   let suppressUntil = 0;
   element.addEventListener('pointerdown', (event) => {
     if (!event.isPrimary) return;
     if (event.target.closest('video[controls]')) { origin = null; return; }
     origin = { x: event.clientX, y: event.clientY };
+    dragged = false;
     suppressUntil = 0;
   }, { passive: true });
   element.addEventListener('pointermove', (event) => {
     if (origin && Math.hypot(event.clientX - origin.x, event.clientY - origin.y) > 10) {
+      dragged = true;
       suppressUntil = performance.now() + 500;
     }
   }, { passive: true });
@@ -434,7 +440,11 @@ function preventDragClick(element) {
     origin = null;
     suppressUntil = performance.now() + 500;
   });
-  element.addEventListener('pointerup', () => { origin = null; });
+  element.addEventListener('pointerup', () => {
+    // Suppress from release, including a slow drag held still before lifting.
+    if (dragged) suppressUntil = performance.now() + 500;
+    origin = null;
+  });
   element.addEventListener('click', (event) => {
     if (event.detail && performance.now() < suppressUntil) {
       event.preventDefault();
@@ -445,11 +455,11 @@ function preventDragClick(element) {
 
 function setProjectPreviewActive(opener, active) {
   opener?.classList.toggle('is-previewing', active);
-  opener?.setAttribute('aria-expanded', String(active));
-  if (active && opener?.classList.contains('slopeframe-preview')) {
-    playSlopePreview(opener);
-    opener.querySelector('.featured-visual__top i').textContent = 'Open project note ↗';
-  }
+  opener?.querySelector('[data-project-preview]')?.setAttribute('aria-expanded', String(active));
+  const indicator = opener?.querySelector('.project-row__arrow');
+  if (indicator) indicator.textContent = active ? '−' : '+';
+  const panel = opener?.querySelector('.project-row__preview');
+  if (panel) panel.inert = !active;
   const previewVideo = opener?.querySelector('.project-row__preview video');
 
   if (!(previewVideo instanceof HTMLVideoElement)) return;
@@ -476,9 +486,8 @@ document.querySelectorAll('.slopeframe-preview').forEach((cover) => {
     if (cover.matches(':focus-visible')) playSlopePreview(cover);
   });
   cover.addEventListener('animationend', (event) => {
-    if (event.animationName === 'slopeframe-peek-unfold') cover.classList.remove('is-unfolding');
+    if (event.target.classList.contains('slopeframe-device--home')) cover.classList.remove('is-unfolding');
   });
-  if (touchFirstMedia.matches) cover.querySelector('.featured-visual__top i').textContent = 'Tap to preview ↗';
 });
 
 function prepareOptionalVideos(root) {
@@ -490,13 +499,9 @@ function prepareOptionalVideos(root) {
 prepareOptionalVideos(document);
 
 const updatePreviewHints = () => {
-  const isTouch = touchFirstMedia.matches || window.innerWidth < 700;
+  const isTouch = touchFirstMedia.matches || window.innerWidth < 920;
   const hint = document.querySelector('[data-project-hint]');
-  if (hint) hint.textContent = isTouch ? 'Tap to preview · Tap again to read' : 'Hover to preview · Click to read';
-  projectRows.forEach((row) => {
-    const caption = row.querySelector('.project-row__preview-caption i');
-    if (caption) caption.textContent = isTouch ? 'Tap again to read ↗' : 'Read project note ↗';
-  });
+  if (hint) hint.textContent = isTouch ? 'Tap + to explore · Open the image to read' : 'Hover to preview · Click to read';
 };
 touchFirstMedia.addEventListener('change', updatePreviewHints);
 window.addEventListener('resize', frameLatest(updatePreviewHints), { passive: true });
@@ -520,18 +525,32 @@ if ('IntersectionObserver' in window) {
 }
 
 projectRows.forEach((row) => {
+  const summary = row.querySelector('[data-project-preview]');
+  let pinned = false;
+  preventDragClick(summary);
+  summary.addEventListener('click', (event) => {
+    if (finePointer.matches && window.innerWidth >= 920 && event.detail !== 0) {
+      pinned = false;
+      setProjectPreviewActive(row, true);
+      openProjectDialog(row.dataset.project, summary);
+      return;
+    }
+    pinned = !row.classList.contains('is-previewing');
+    setProjectPreviewActive(row, pinned);
+  });
   row.addEventListener('pointerenter', (event) => {
-    if (!finePointer.matches || event.pointerType !== 'mouse') return;
-    const previewVideo = row.querySelector('.project-row__preview video');
-    if (!reduceMotion) previewVideo?.play().catch(() => {});
+    if (!finePointer.matches || window.innerWidth < 920 || event.pointerType !== 'mouse') return;
+    setProjectPreviewActive(row, true);
   });
 
   row.addEventListener('pointerleave', () => {
-    if (!finePointer.matches) return;
-    const previewVideo = row.querySelector('.project-row__preview video');
-    if (!(previewVideo instanceof HTMLVideoElement)) return;
-    previewVideo.pause();
-    previewVideo.currentTime = 0;
+    if (!finePointer.matches || pinned || row.contains(document.activeElement) || projectDialog?.open) return;
+    setProjectPreviewActive(row, false);
+  });
+  row.addEventListener('focusout', (event) => {
+    if (!pinned && !row.contains(event.relatedTarget) && !row.matches(':hover') && !projectDialog?.open) {
+      setProjectPreviewActive(row, false);
+    }
   });
 });
 
@@ -568,6 +587,7 @@ function renderMedia(index) {
 function openMediaViewer(trigger) {
   if (!mediaViewer || mediaViewer.open) return;
   mediaReturnFocus = trigger;
+  mediaReturnScroll = projectShell?.scrollTop || 0;
   const gallery = trigger.closest('.case-media-gallery, .case-phone-rail');
   mediaCards = gallery ? [...gallery.querySelectorAll('[data-case-image]')] : [trigger];
   renderMedia(mediaCards.indexOf(trigger));
@@ -613,6 +633,8 @@ function setupProjectRails() {
   });
   projectDialogContent.querySelectorAll('.case-phone-rail, .case-media-gallery').forEach((rail) => {
     const slides = [...rail.children];
+    rail.tabIndex = 0;
+    rail.setAttribute('role', 'region');
     const toolbar = document.createElement('div');
     toolbar.className = 'case-rail-controls';
     toolbar.innerHTML = '<span>Explore images <small>Swipe · Tap to enlarge</small></span><div><button type="button" aria-label="Previous project image">←</button><span aria-live="polite"></span><button type="button" aria-label="Next project image">→</button></div>';
@@ -623,10 +645,13 @@ function setupProjectRails() {
     let targetIndex = null;
     let settle;
     const position = (slide) => slide.getBoundingClientRect().left - rail.getBoundingClientRect().left + rail.scrollLeft;
+    const destination = (slide) => Math.min(rail.scrollWidth - rail.clientWidth, Math.max(0, position(slide) - position(slides[0])));
     const update = () => {
       toolbar.hidden = rail.scrollWidth <= rail.clientWidth + 2;
-      const first = position(slides[0]);
-      if (targetIndex === null) index = slides.reduce((nearest, slide, i) => Math.abs(position(slide) - first - rail.scrollLeft) < Math.abs(position(slides[nearest]) - first - rail.scrollLeft) ? i : nearest, 0);
+      if (targetIndex === null) {
+        index = slides.reduce((nearest, slide, i) => Math.abs(destination(slide) - rail.scrollLeft) < Math.abs(destination(slides[nearest]) - rail.scrollLeft) ? i : nearest, 0);
+        if (!toolbar.hidden && rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 2) index = slides.length - 1;
+      }
       previous.disabled = index === 0;
       next.disabled = index === slides.length - 1;
       status.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
@@ -634,11 +659,16 @@ function setupProjectRails() {
     const go = (delta) => {
       index = Math.max(0, Math.min(slides.length - 1, index + delta));
       targetIndex = index;
-      rail.scrollTo({ left: position(slides[index]) - position(slides[0]), behavior: reduceMotion ? 'instant' : 'smooth' });
+      rail.scrollTo({ left: destination(slides[index]), behavior: reduceMotion ? 'instant' : 'smooth' });
       update();
     };
     previous.addEventListener('click', () => go(-1));
     next.addEventListener('click', () => go(1));
+    rail.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || toolbar.hidden) return;
+      event.preventDefault();
+      go(event.key === 'ArrowRight' ? 1 : -1);
+    });
     const paint = frameLatest(update);
     rail.addEventListener('scroll', () => {
       paint();
@@ -667,30 +697,46 @@ function openProjectDialog(projectKey, trigger) {
   lockScroll('project');
   projectDialog.setAttribute('aria-labelledby', 'active-project-title');
   projectDialogContent.querySelector('h2').id = 'active-project-title';
+  projectDialog.querySelector('[data-project-label]').textContent = projectKey === 'gbh' ? 'GBH Kids' : projectDialogContent.querySelector('h2').textContent;
   showDialog(projectDialog);
   projectDialog.querySelector('.project-dialog__shell')?.scrollTo({ top: 0, behavior: 'instant' });
   disposeProjectRails = setupProjectRails();
+  updateProjectJump();
 }
 
 projectOpeners.forEach((opener) => {
   preventDragClick(opener);
-  opener.addEventListener('click', (event) => {
-    const usesTouchPreview = (
-      touchFirstMedia.matches || window.innerWidth < 700
-    ) && (
-      opener.classList.contains('slopeframe-preview') ||
-      opener.classList.contains('project-row')
-    ) && event.detail !== 0;
-
-    if (usesTouchPreview && !opener.classList.contains('is-previewing')) {
-      setProjectPreviewActive(opener, true);
-      return;
-    }
-
-    // Retain the expanded row behind the note, so closing returns to exactly
-    // the same reading position. Opening a later row never collapses one above.
+  opener.addEventListener('click', () => {
+    // Every explicit "read" action opens immediately. Preview disclosure and
+    // navigation are separate controls, so repeated taps are never required.
     openProjectDialog(opener.dataset.projectOpen, opener);
   });
+});
+
+function projectImageSection() {
+  return projectDialogContent?.querySelector('.case-rail-controls:not([hidden]), .case-media-gallery, .case-cinema');
+}
+
+function updateProjectJump() {
+  const target = projectImageSection();
+  if (!projectJump || !projectShell) return;
+  projectJump.hidden = !target;
+  if (!target) return;
+  const atEnd = projectShell.scrollTop > 0 && projectShell.scrollTop + projectShell.clientHeight >= projectShell.scrollHeight - 2;
+  const atImages = atEnd || target.getBoundingClientRect().top <= projectShell.getBoundingClientRect().top + 100;
+  if (projectJump.dataset.overview === String(atImages)) return;
+  projectJump.dataset.overview = String(atImages);
+  projectJump.innerHTML = atImages ? 'Overview <span aria-hidden="true">↑</span>' : 'Images <span aria-hidden="true">↓</span>';
+  projectJump.setAttribute('aria-label', atImages ? 'Back to project overview' : 'Jump to project images');
+}
+
+projectShell?.addEventListener('scroll', frameLatest(updateProjectJump), { passive: true });
+projectJump?.addEventListener('click', () => {
+  const target = projectImageSection();
+  if (!target || !projectShell) return;
+  const headerHeight = projectDialog.querySelector('.project-dialog__header').getBoundingClientRect().height;
+  const top = projectJump.dataset.overview === 'true' ? 0 : projectShell.scrollTop + target.getBoundingClientRect().top - projectShell.getBoundingClientRect().top - headerHeight - 16;
+  projectShell.scrollTo({ top, behavior: reduceMotion ? 'instant' : 'smooth' });
 });
 
 if (projectDialogContent) preventDragClick(projectDialogContent);
@@ -719,6 +765,7 @@ mediaViewer?.addEventListener('close', () => {
     mediaViewerImage.alt = '';
   }
   if (mediaReturnFocus instanceof HTMLElement) mediaReturnFocus.focus({ preventScroll: true });
+  projectShell?.scrollTo({ top: mediaReturnScroll, behavior: 'instant' });
   mediaReturnFocus = null;
   mediaCards = [];
 });

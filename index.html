@@ -28,7 +28,7 @@
       href="assets/images/haoze-portrait-marketer-cutout.jpg"
       fetchpriority="high"
     />
-    <link rel="stylesheet" href="styles.css?v=20260915-warm-type" />
+  <link rel="stylesheet" href="styles.css?v=20260916-mobile-flow" />
     <script>document.documentElement.classList.add('js');</script>
   </head>
 
@@ -233,10 +233,10 @@
               class="featured-visual slopeframe-preview project-visual-button"
               type="button"
               aria-label="Open Slopeframe project note"
-              aria-expanded="false"
               data-project-open="slopeframe"
             >
               <span class="featured-visual__top"><b><span>01</span><small>/ Product design</small></b><i>Open project note ↗</i></span>
+              <span class="slopeframe-artwork">
               <span class="slopeframe-device-stack" data-project-cover>
                 <span class="slopeframe-device slopeframe-device--home">
                   <img src="assets/images/slopeframe-home.jpg" alt="Slopeframe daily ski dashboard" width="1206" height="2622" loading="lazy" draggable="false" />
@@ -251,6 +251,7 @@
               <span class="project-peek" aria-hidden="true">
                 <strong>Plan. Capture. Remember.</strong>
                 <small>A ski day designed around the moments worth keeping.</small>
+              </span>
               </span>
             </button>
             <div class="featured-project__copy">
@@ -300,78 +301,89 @@
         <div class="project-index reveal">
           <p class="project-index__label"><span>More project notes</span><span class="project-index__hint" data-project-hint>Hover to preview · Click to read</span></p>
 
-          <button class="project-row" type="button" aria-expanded="false" data-project-open="nehzova">
+          <article class="project-row" data-project="nehzova">
+            <button class="project-row__summary" type="button" aria-expanded="false" aria-controls="preview-nehzova" data-project-preview>
             <span class="project-row__index">03</span>
             <h3>Nehzova</h3>
             <p>An independent practice connecting market research, AI search, and design.</p>
             <small>Founder &amp; Principal · Ongoing</small>
-            <span class="project-row__preview" aria-hidden="true">
-              <span class="project-row__preview-inner">
+            <span class="project-row__arrow" aria-hidden="true">+</span>
+            </button>
+            <div class="project-row__preview" id="preview-nehzova" inert>
+              <button class="project-row__preview-inner" type="button" data-project-open="nehzova" aria-label="Read Nehzova project note">
                 <span class="project-row__preview-media">
                   <img src="assets/images/nehzova-home.jpg" alt="" loading="lazy">
                 </span>
-                <span class="project-row__preview-caption"><b>Nehzova Group</b><i>Tap again to open note</i></span>
-              </span>
-            </span>
-            <span class="project-row__arrow" aria-hidden="true">↗</span>
-          </button>
+                <span class="project-row__preview-caption"><b>Nehzova Group</b><i>Read project note ↗</i></span>
+              </button>
+            </div>
+          </article>
 
-          <button class="project-row" type="button" aria-expanded="false" data-project-open="commerce">
+          <article class="project-row" data-project="commerce">
+            <button class="project-row__summary" type="button" aria-expanded="false" aria-controls="preview-commerce" data-project-preview>
             <span class="project-row__index">04</span>
             <h3>Report Cockpit</h3>
             <p>A weekly performance workspace that brings filters, KPI signals, and drill-down analysis into one flow.</p>
             <small>Product + data operations</small>
-            <span class="project-row__preview" aria-hidden="true">
-              <span class="project-row__preview-inner">
+            <span class="project-row__arrow" aria-hidden="true">+</span>
+            </button>
+            <div class="project-row__preview" id="preview-commerce" inert>
+              <button class="project-row__preview-inner" type="button" data-project-open="commerce" aria-label="Read Report Cockpit project note">
                 <span class="project-row__preview-media">
                   <img src="assets/images/report-cockpit-overview.jpg" alt="" loading="lazy">
                 </span>
-                <span class="project-row__preview-caption"><b>Live workflow</b><i>Tap again to open note</i></span>
-              </span>
-            </span>
-            <span class="project-row__arrow" aria-hidden="true">↗</span>
-          </button>
+                <span class="project-row__preview-caption"><b>Live workflow</b><i>Read project note ↗</i></span>
+              </button>
+            </div>
+          </article>
 
-          <button class="project-row" type="button" aria-expanded="false" data-project-open="mydreamland">
+          <article class="project-row" data-project="mydreamland">
+            <button class="project-row__summary" type="button" aria-expanded="false" aria-controls="preview-mydreamland" data-project-preview>
             <span class="project-row__index">05</span>
             <h3>MyDreamland</h3>
             <p>A game and HCI concept for making city loneliness feel less immovable.</p>
             <small>Game design + CASA</small>
-            <span class="project-row__preview" aria-hidden="true">
-              <span class="project-row__preview-inner">
+            <span class="project-row__arrow" aria-hidden="true">+</span>
+            </button>
+            <div class="project-row__preview" id="preview-mydreamland" inert>
+              <button class="project-row__preview-inner" type="button" data-project-open="mydreamland" aria-label="Read MyDreamland project note">
                 <span class="project-row__preview-media">
                   <img src="assets/images/mydreamland-city.jpg" alt="" loading="lazy">
                 </span>
-                <span class="project-row__preview-caption"><b>A city made social</b><i>Tap again to open note</i></span>
-              </span>
-            </span>
-            <span class="project-row__arrow" aria-hidden="true">↗</span>
-          </button>
+                <span class="project-row__preview-caption"><b>A city made social</b><i>Read project note ↗</i></span>
+              </button>
+            </div>
+          </article>
 
-          <button class="project-row" type="button" aria-expanded="false" data-project-open="fc25">
+          <article class="project-row" data-project="fc25">
+            <button class="project-row__summary" type="button" aria-expanded="false" aria-controls="preview-fc25" data-project-preview>
             <span class="project-row__index">06</span>
             <h3>FC25 Teaser</h3>
             <p>A trailer-led microsite concept that turns a launch countdown into anticipation.</p>
             <small>Interactive web + motion</small>
-            <span class="project-row__preview project-row__preview--video" aria-hidden="true">
-              <span class="project-row__preview-inner">
+            <span class="project-row__arrow" aria-hidden="true">+</span>
+            </button>
+            <div class="project-row__preview project-row__preview--video" id="preview-fc25" inert>
+              <button class="project-row__preview-inner" type="button" data-project-open="fc25" aria-label="Read FC25 Teaser project note">
                 <span class="project-row__preview-media">
                   <span class="teaser-poster"><span>Unofficial web concept</span><strong>FC25</strong><em>A moment before kickoff.</em></span>
                   <video src="assets/media/fc25-teaser.mov" muted loop playsinline preload="none" data-optional-video></video>
                 </span>
-                <span class="project-row__preview-caption"><b>Motion study</b><i>Tap again to open note</i></span>
-              </span>
-            </span>
-            <span class="project-row__arrow" aria-hidden="true">↗</span>
-          </button>
+                <span class="project-row__preview-caption"><b>Motion study</b><i>Read project note ↗</i></span>
+              </button>
+            </div>
+          </article>
         </div>
       </section>
 
       <dialog class="project-dialog" aria-label="Project overview" data-project-dialog>
         <div class="project-dialog__shell">
           <header class="project-dialog__header">
-            <span>Project note</span>
-            <button type="button" data-project-close>Close <span aria-hidden="true">×</span></button>
+            <span data-project-label>Project note</span>
+            <div class="project-dialog__actions">
+              <button type="button" data-project-jump>Images <span aria-hidden="true">↓</span></button>
+              <button type="button" data-project-close aria-label="Back to projects">Back <span aria-hidden="true">×</span></button>
+            </div>
           </header>
           <div class="project-dialog__content" data-project-content></div>
         </div>
@@ -385,7 +397,7 @@
             <button type="button" aria-label="Next image" data-media-next>→</button>
           </div>
           <button class="media-viewer__close" type="button" data-media-viewer-close>
-            Close <span aria-hidden="true">×</span>
+            Back to note <span aria-hidden="true">×</span>
           </button>
         </div>
         <figure>
@@ -681,6 +693,6 @@
       <a href="#top">Back to top ↑</a>
     </footer>
 
-    <script src="script.js?v=20260915-polish"></script>
+  <script src="script.js?v=20260916-mobile-flow"></script>
   </body>
 </html>
