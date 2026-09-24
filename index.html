@@ -28,7 +28,7 @@
       href="assets/images/haoze-portrait-marketer-cutout.jpg"
       fetchpriority="high"
     />
-  <link rel="stylesheet" href="styles.css?v=20260916-mobile-flow" />
+  <link rel="stylesheet" href="styles.css?v=20260923-mobile-preview-v1" />
     <script>document.documentElement.classList.add('js');</script>
   </head>
 
@@ -228,37 +228,84 @@
         </div>
 
         <div class="featured-projects">
-          <article class="featured-project reveal">
-            <button
-              class="featured-visual slopeframe-preview project-visual-button"
-              type="button"
-              aria-label="Open Slopeframe project note"
-              data-project-open="slopeframe"
-            >
-              <span class="featured-visual__top"><b><span>01</span><small>/ Product design</small></b><i>Open project note ↗</i></span>
-              <span class="slopeframe-artwork">
-              <span class="slopeframe-device-stack" data-project-cover>
-                <span class="slopeframe-device slopeframe-device--home">
-                  <img src="assets/images/slopeframe-home.jpg" alt="Slopeframe daily ski dashboard" width="1206" height="2622" loading="lazy" draggable="false" />
-                </span>
-                <span class="slopeframe-device slopeframe-device--booking" aria-hidden="true">
-                  <img src="assets/images/slopeframe-booking.jpg" alt="" width="1206" height="2622" loading="lazy" draggable="false" />
-                </span>
-                <span class="slopeframe-device slopeframe-device--match" aria-hidden="true">
-                  <img src="assets/images/slopeframe-match.jpg" alt="" width="1206" height="2622" loading="lazy" draggable="false" />
-                </span>
-              </span>
-              <span class="project-peek" aria-hidden="true">
-                <strong>Plan. Capture. Remember.</strong>
-                <small>A ski day designed around the moments worth keeping.</small>
-              </span>
-              </span>
-            </button>
+          <article class="featured-project featured-project--slopeframe reveal">
             <div class="featured-project__copy">
-              <div class="project-meta"><span>Mobile product</span><span>2026</span></div>
+              <div class="project-meta"><span>01 / Mobile product</span><span>2026</span></div>
               <h3>Slopeframe</h3>
               <p>A ski-day companion that connects planning, local creators, photo matching, and the memories that remain after the lifts close.</p>
               <button class="project-note-link" type="button" data-project-open="slopeframe">Read project note <span aria-hidden="true">↗</span></button>
+            </div>
+            <div class="featured-visual slopeframe-preview">
+              <div class="slopeframe-preview__bar"><span>Interface study <i>/</i> Slopeframe</span><span class="slopeframe-preview__edition">iOS · 2026</span><button type="button" data-preview-expand aria-expanded="false" aria-controls="slopeframe-preview-screens" hidden>Close <span aria-hidden="true">×</span></button></div>
+              <div class="slopeframe-gallery" id="slopeframe-preview-screens" role="region" aria-label="Slopeframe interactive preview" data-preview-gallery>
+                <div class="slopeframe-story" data-preview-story>
+                  <p class="slopeframe-story__eyebrow" data-preview-eyebrow>A day on the mountain</p>
+                  <h4 data-preview-title>From first lift<br>to last frame.</h4>
+                  <p class="slopeframe-story__description" data-preview-description>Find your people, your photos, and a day worth keeping.</p>
+                  <button class="slopeframe-story__action" type="button" data-preview-action><span data-preview-action-label>Explore the experience</span><span aria-hidden="true">↗</span></button>
+                </div>
+                <figure class="slopeframe-screen">
+                  <button class="slopeframe-screen__image" type="button" data-case-image data-preview-image aria-label="Enlarge Slopeframe Today screen" data-media-caption="01 / Today — See the resort and start your ski day.">
+                    <img src="assets/images/slopeframe-home-20260923.webp" alt="Slopeframe Today screen" width="1206" height="2622" loading="lazy" decoding="async" draggable="false" />
+                    <span class="slopeframe-screen__zoom" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4.3" stroke="currentColor" stroke-width="1.3"/><path d="m10 10 3.5 3.5M4.6 6.8H9M6.8 4.6V9" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                  </button>
+                  <figcaption><strong><span>01</span> Today</strong><span>See the resort and start your ski day.</span></figcaption>
+                </figure>
+                <figure class="slopeframe-screen">
+                  <button class="slopeframe-screen__image" type="button" data-case-image data-preview-image aria-label="Enlarge Slopeframe Book screen" data-media-caption="02 / Book — Compare photographers and available sessions.">
+                    <img src="assets/images/slopeframe-booking-20260923.webp" alt="Slopeframe Book screen" width="1206" height="2622" loading="lazy" decoding="async" draggable="false" />
+                    <span class="slopeframe-screen__zoom" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4.3" stroke="currentColor" stroke-width="1.3"/><path d="m10 10 3.5 3.5M4.6 6.8H9M6.8 4.6V9" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                  </button>
+                  <figcaption><strong><span>02</span> Book</strong><span>Compare photographers and available sessions.</span></figcaption>
+                </figure>
+                <figure class="slopeframe-screen">
+                  <button class="slopeframe-screen__image" type="button" data-case-image data-preview-image aria-label="Enlarge Slopeframe AI Match screen" data-media-caption="03 / AI Match — Find your photos by time and gear colors.">
+                    <img src="assets/images/slopeframe-match-20260923.webp" alt="Slopeframe AI Match screen" width="1206" height="2622" loading="lazy" decoding="async" draggable="false" />
+                    <span class="slopeframe-screen__zoom" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4.3" stroke="currentColor" stroke-width="1.3"/><path d="m10 10 3.5 3.5M4.6 6.8H9M6.8 4.6V9" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                  </button>
+                  <figcaption><strong><span>03</span> AI Match</strong><span>Find your photos by time and gear colors.</span></figcaption>
+                </figure>
+                <figure class="slopeframe-screen">
+                  <button class="slopeframe-screen__image" type="button" data-case-image data-preview-image aria-label="Enlarge Slopeframe Trips screen" data-media-caption="04 / Trips — Browse purchased photos and ski-day albums.">
+                    <img src="assets/images/slopeframe-journal-20260923.webp" alt="Slopeframe Trips screen" width="1206" height="2622" loading="lazy" decoding="async" draggable="false" />
+                    <span class="slopeframe-screen__zoom" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4.3" stroke="currentColor" stroke-width="1.3"/><path d="m10 10 3.5 3.5M4.6 6.8H9M6.8 4.6V9" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                  </button>
+                  <figcaption><strong><span>04</span> Trips</strong><span>Browse purchased photos and ski-day albums.</span></figcaption>
+                </figure>
+                <figure class="slopeframe-screen">
+                  <button class="slopeframe-screen__image" type="button" data-case-image data-preview-image aria-label="Enlarge Slopeframe Album screen" data-media-caption="05 / Album — Revisit a day’s photos and mountain stats.">
+                    <img src="assets/images/slopeframe-trip-detail-20260923.webp" alt="Slopeframe Album screen" width="1206" height="2622" loading="lazy" decoding="async" draggable="false" />
+                    <span class="slopeframe-screen__zoom" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4.3" stroke="currentColor" stroke-width="1.3"/><path d="m10 10 3.5 3.5M4.6 6.8H9M6.8 4.6V9" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                  </button>
+                  <figcaption><strong><span>05</span> Album</strong><span>Revisit a day’s photos and mountain stats.</span></figcaption>
+                </figure>
+                <figure class="slopeframe-screen">
+                  <button class="slopeframe-screen__image" type="button" data-case-image data-preview-image aria-label="Enlarge Slopeframe Profile screen" data-media-caption="06 / Profile — Manage your ski profile and gear preferences.">
+                    <img src="assets/images/slopeframe-profile-20260923.webp" alt="Slopeframe Profile screen" width="1206" height="2622" loading="lazy" decoding="async" draggable="false" />
+                    <span class="slopeframe-screen__zoom" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4.3" stroke="currentColor" stroke-width="1.3"/><path d="m10 10 3.5 3.5M4.6 6.8H9M6.8 4.6V9" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                  </button>
+                  <figcaption><strong><span>06</span> Profile</strong><span>Manage your ski profile and gear preferences.</span></figcaption>
+                </figure>
+                <button class="slopeframe-composition-open" type="button" data-preview-deck-open aria-label="Explore all six Slopeframe screens"></button>
+                <div class="slopeframe-selectors" data-preview-selectors hidden>
+                  <div class="slopeframe-selectors__label"><span>The experience</span><span data-preview-count aria-live="polite" aria-atomic="true">01 / 06</span></div>
+                  <div class="slopeframe-selectors__track">
+                  <button type="button" class="slopeframe-selector" data-screen-select="0" aria-label="Show Today screen" aria-pressed="true"><span class="slopeframe-selector__image"><img src="assets/images/slopeframe-home-20260923.webp" alt="" width="1206" height="2622" loading="lazy" draggable="false" /></span><span>Today</span></button>
+                  <button type="button" class="slopeframe-selector" data-screen-select="1" aria-label="Show Book screen" aria-pressed="false"><span class="slopeframe-selector__image"><img src="assets/images/slopeframe-booking-20260923.webp" alt="" width="1206" height="2622" loading="lazy" draggable="false" /></span><span>Book</span></button>
+                  <button type="button" class="slopeframe-selector" data-screen-select="2" aria-label="Show AI Match screen" aria-pressed="false"><span class="slopeframe-selector__image"><img src="assets/images/slopeframe-match-20260923.webp" alt="" width="1206" height="2622" loading="lazy" draggable="false" /></span><span>AI Match</span></button>
+                  <button type="button" class="slopeframe-selector" data-screen-select="3" aria-label="Show Trips screen" aria-pressed="false"><span class="slopeframe-selector__image"><img src="assets/images/slopeframe-journal-20260923.webp" alt="" width="1206" height="2622" loading="lazy" draggable="false" /></span><span>Trips</span></button>
+                  <button type="button" class="slopeframe-selector" data-screen-select="4" aria-label="Show Album screen" aria-pressed="false"><span class="slopeframe-selector__image"><img src="assets/images/slopeframe-trip-detail-20260923.webp" alt="" width="1206" height="2622" loading="lazy" draggable="false" /></span><span>Album</span></button>
+                  <button type="button" class="slopeframe-selector" data-screen-select="5" aria-label="Show Profile screen" aria-pressed="false"><span class="slopeframe-selector__image"><img src="assets/images/slopeframe-profile-20260923.webp" alt="" width="1206" height="2622" loading="lazy" draggable="false" /></span><span>Profile</span></button>
+                  </div>
+                  <div class="slopeframe-mobile-controls">
+                    <button type="button" data-preview-previous aria-label="Previous app screen">←</button>
+                    <button type="button" data-preview-mobile-close>Collapse preview <span aria-hidden="true">×</span></button>
+                    <button type="button" data-preview-next aria-label="Next app screen">→</button>
+                  </div>
+                  <p class="slopeframe-mobile-hint">Swipe the image · Tap to zoom</p>
+                </div>
+                <span class="slopeframe-composition-note" data-preview-composition-note>Hover to explore · Click a thumbnail to keep it open.</span>
+              </div>
             </div>
           </article>
 
@@ -396,23 +443,61 @@
             <span aria-live="polite" data-media-status>01 / 01</span>
             <button type="button" aria-label="Next image" data-media-next>→</button>
           </div>
-          <button class="media-viewer__close" type="button" data-media-viewer-close>
-            Back to note <span aria-hidden="true">×</span>
+          <div class="media-viewer__zoom" role="group" aria-label="Image zoom">
+            <button type="button" aria-label="Zoom out" title="Zoom out (−)" data-media-zoom-out>−</button>
+            <output class="media-viewer__zoom-status" aria-live="polite" aria-label="Image magnification" data-media-zoom-status>Fit</output>
+            <button type="button" aria-label="Zoom in" title="Zoom in (+)" data-media-zoom-in>+</button>
+            <button type="button" aria-label="Fit entire image" title="Fit entire image (0)" data-media-fit>Fit</button>
+            <button type="button" aria-label="Show image at original size" title="Original size (1)" data-media-actual>100%</button>
+          </div>
+          <button class="media-viewer__close" type="button" aria-label="Close expanded image" data-media-viewer-close>
+            <span data-media-close-label>Back to note</span> <span aria-hidden="true">×</span>
           </button>
         </div>
         <figure>
-          <img alt="" data-media-viewer-image />
+          <div class="media-viewer__viewport" tabindex="0" role="region" aria-label="Image detail. When zoomed, drag, scroll, or use the arrow keys to explore." data-media-viewport>
+            <div class="media-viewer__canvas"><img alt="" draggable="false" data-media-viewer-image /></div>
+          </div>
           <figcaption data-media-viewer-caption></figcaption>
         </figure>
       </dialog>
 
       <template id="project-slopeframe">
-        <article class="case-note">
+        <article class="case-note case-note--slopeframe">
           <header class="case-note__hero">
             <p>01 / Mobile product · 2026</p>
             <h2>Slopeframe</h2>
             <div><strong>A ski day is more than a set of stats.</strong><span>This concept connects preparation, people, photographs, and the feeling of returning home with a story.</span></div>
           </header>
+          <section class="slopeframe-screens" aria-labelledby="slopeframe-screens-title">
+            <div class="slopeframe-screens__heading"><h3 id="slopeframe-screens-title">One day. Six connected views.</h3><p>Explore the interface</p></div>
+            <div class="case-phone-rail case-phone-rail--slopeframe" aria-label="Slopeframe interface screens">
+            <figure>
+              <img src="assets/images/slopeframe-home-20260923.webp" alt="Slopeframe Today screen — the day at a glance" width="1206" height="2622" loading="lazy" decoding="async" />
+              <figcaption><span class="screen-step">01 / Today</span><strong>The day at a glance</strong><span>Resort context, photo discovery, and a starting point for the day.</span></figcaption>
+            </figure>
+            <figure>
+              <img src="assets/images/slopeframe-booking-20260923.webp" alt="Slopeframe Book screen — find your photographer" width="1206" height="2622" loading="lazy" decoding="async" />
+              <figcaption><span class="screen-step">02 / Book</span><strong>Find your photographer</strong><span>Compare photographers, styles, and available sessions.</span></figcaption>
+            </figure>
+            <figure>
+              <img src="assets/images/slopeframe-match-20260923.webp" alt="Slopeframe AI Match screen — find your frame" width="1206" height="2622" loading="lazy" decoding="async" />
+              <figcaption><span class="screen-step">03 / AI Match</span><strong>Find your frame</strong><span>Narrow the search by resort, time, and gear colors.</span></figcaption>
+            </figure>
+            <figure>
+              <img src="assets/images/slopeframe-journal-20260923.webp" alt="Slopeframe Trips screen — keep the whole day" width="1206" height="2622" loading="lazy" decoding="async" />
+              <figcaption><span class="screen-step">04 / Trips</span><strong>Keep the whole day</strong><span>Bring purchased photos and ski-day albums into one archive.</span></figcaption>
+            </figure>
+            <figure>
+              <img src="assets/images/slopeframe-trip-detail-20260923.webp" alt="Slopeframe Album screen — revisit the mountain" width="1206" height="2622" loading="lazy" decoding="async" />
+              <figcaption><span class="screen-step">05 / Album</span><strong>Revisit the mountain</strong><span>A day’s photos, runs, and vertical, in one place.</span></figcaption>
+            </figure>
+            <figure>
+              <img src="assets/images/slopeframe-profile-20260923.webp" alt="Slopeframe Profile screen — make it personal" width="1206" height="2622" loading="lazy" decoding="async" />
+              <figcaption><span class="screen-step">06 / Profile</span><strong>Make it personal</strong><span>Keep personal details, skiing level, and gear preferences together.</span></figcaption>
+            </figure>
+            </div>
+          </section>
           <dl class="case-note__facts">
             <div><dt>Role</dt><dd>Product and interaction design</dd></div>
             <div><dt>Human need</dt><dd>Keep a fragmented ski day connected</dd></div>
@@ -422,12 +507,7 @@
             <h3>Designed around the whole day.</h3>
             <p>Slopeframe brings the practical and emotional parts of skiing into one calm flow: check the mountain, find a photographer, identify your photos, and collect each trip without losing the moment to admin.</p>
           </div>
-          <div class="case-phone-rail" aria-label="Slopeframe interface screens">
-            <figure><img src="assets/images/slopeframe-home.jpg" alt="Slopeframe daily dashboard" width="1206" height="2622" loading="lazy" /><figcaption>Today / the day at a glance</figcaption></figure>
-            <figure><img src="assets/images/slopeframe-booking.jpg" alt="Slopeframe photographer booking" width="1206" height="2622" loading="lazy" /><figcaption>Booking / people on the mountain</figcaption></figure>
-            <figure><img src="assets/images/slopeframe-match.jpg" alt="Slopeframe AI photo matching settings" width="1206" height="2622" loading="lazy" /><figcaption>Matching / finding your own frame</figcaption></figure>
-            <figure><img src="assets/images/slopeframe-journal.jpg" alt="Slopeframe ski journal and photo archive" width="1206" height="2622" loading="lazy" /><figcaption>Journal / the memory after the run</figcaption></figure>
-          </div>
+
         </article>
       </template>
 
@@ -693,6 +773,6 @@
       <a href="#top">Back to top ↑</a>
     </footer>
 
-  <script src="script.js?v=20260916-mobile-flow"></script>
+  <script src="script.js?v=20260923-mobile-preview-v1"></script>
   </body>
 </html>

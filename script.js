@@ -20,6 +20,12 @@ const mediaViewer = document.querySelector('[data-media-viewer]');
 const mediaViewerImage = document.querySelector('[data-media-viewer-image]');
 const mediaViewerCaption = document.querySelector('[data-media-viewer-caption]');
 const mediaViewerClose = document.querySelector('[data-media-viewer-close]');
+const mediaViewport = document.querySelector('[data-media-viewport]');
+const mediaZoomIn = document.querySelector('[data-media-zoom-in]');
+const mediaZoomOut = document.querySelector('[data-media-zoom-out]');
+const mediaFitButton = document.querySelector('[data-media-fit]');
+const mediaActualButton = document.querySelector('[data-media-actual]');
+const mediaZoomStatus = document.querySelector('[data-media-zoom-status]');
 const publicationDetails = [...document.querySelectorAll('[data-publication-accordion] details')];
 const readingProgress = document.querySelector('[data-reading-progress]');
 const marquee = document.querySelector('.practice-marquee');
@@ -473,21 +479,268 @@ function setProjectPreviewActive(opener, active) {
   previewVideo.currentTime = 0;
 }
 
-function playSlopePreview(cover) {
-  if (reduceMotion || cover.classList.contains('is-unfolding')) return;
-  cover.classList.add('is-unfolding');
-}
-
+// A cover composition becomes a focused product walkthrough; the six source cards stay in DOM order.
 document.querySelectorAll('.slopeframe-preview').forEach((cover) => {
+  const stage = cover.querySelector('[data-preview-gallery]');
+  const slides = [...stage.querySelectorAll('.slopeframe-screen')];
+  const buttons = slides.map((slide) => slide.querySelector('[data-preview-image]'));
+  const close = cover.querySelector('[data-preview-expand]');
+  const deckOpen = cover.querySelector('[data-preview-deck-open]');
+  const story = cover.querySelector('[data-preview-story]');
+  const eyebrow = cover.querySelector('[data-preview-eyebrow]');
+  const title = cover.querySelector('[data-preview-title]');
+  const description = cover.querySelector('[data-preview-description]');
+  const action = cover.querySelector('[data-preview-action]');
+  const actionLabel = cover.querySelector('[data-preview-action-label]');
+  const selectors = cover.querySelector('[data-preview-selectors]');
+  const tabs = [...cover.querySelectorAll('[data-screen-select]')];
+  const count = cover.querySelector('[data-preview-count]');
+  const selectorTrack = cover.querySelector('.slopeframe-selectors__track');
+  const previousScreen = cover.querySelector('[data-preview-previous]');
+  const nextScreen = cover.querySelector('[data-preview-next]');
+  const mobileClose = cover.querySelector('[data-preview-mobile-close]');
+  const pages = [
+    ['Today', 'A day worth<br>keeping.', 'Your resort, your next run, and the moments ahead—all in one place.'],
+    ['Book', 'Meet your<br>mountain crew.', 'Discover local photographers and find a session that fits your day.'],
+    ['AI Match', 'Find yourself<br>in the frame.', 'Match the mountain, the moment, and your gear to find your photos.'],
+    ['Trips', 'Keep the<br>whole day.', 'Purchased photos and ski-day albums, together in your personal archive.'],
+    ['Album', 'Back to<br>that feeling.', 'Revisit the runs, the people, and the photos that made a day yours.'],
+    ['Profile', 'Your kind<br>of mountain.', 'A ski profile built around your level, your gear, and your home mountain.']
+  ];
+  let expanded = false;
+  let pinned = false;
+  let pointerInside = false;
+  let suppressHoverUntilLeave = false;
+  let enterTimer;
+  let leaveTimer;
+  let selectionTimer;
+  let ownsViewer = false;
+  let active = 0;
+  let lastWidth = 0;
+  let screenGesture = null;
+  let suppressImageClickUntil = 0;
+  const layout = () => {
+    const width = stage.clientWidth;
+    const mobile = width < 680;
+    const storyBottom = story.offsetTop + story.offsetHeight;
+    let mainWidth = mobile ? Math.min(218, width * .49) : Math.min(226, width * .255);
+    if (mobile && expanded) {
+      const headerHeight = document.querySelector('[data-header]')?.offsetHeight || 0;
+      const availableHeight = window.innerHeight - headerHeight - cover.querySelector('.slopeframe-preview__bar').offsetHeight - storyBottom - selectors.offsetHeight - 90;
+      mainWidth = Math.min(mainWidth, Math.max(120, (availableHeight - 8) * 1206 / 2622 + 8));
+    }
+    const mainHeight = (mainWidth - 8) * 2622 / 1206 + 8;
+    const mainTop = mobile ? storyBottom + (expanded ? 18 : 38) : Math.max(18, (548 - mainHeight) / 2 - 18);
+    const center = mobile ? width / 2 : width * .73;
+    const compositionWidth = mobile ? mainWidth : Math.min(mainWidth, width * .225);
+    const compositionCenter = center + (!mobile && width < 900 ? width * .03 : 0);
+    const navTop = mobile ? mainTop + mainHeight + 20 : Math.max(370, storyBottom + 30);
+    selectors.style.top = `${navTop}px`;
+    const navLeft = width * (mobile ? .06 : .0435);
+    const navWidth = width * (mobile ? .88 : .34);
+    const thumbGap = mobile ? 7 : 9;
+    const thumbWidth = mobile ? Math.max(44, (navWidth - 35) / 6) : (navWidth - 45) / 6;
+    const coverX = [0, -.56, .64, -.99, 1.03, .2];
+    const coverY = [0, 53, 68, 104, 122, 50];
+    const coverScale = [1, .86, .83, .7, .69, .77];
+    const coverAngle = [-2, -12, 10, -17, 16, 5];
+    slides.forEach((slide, i) => {
+      const selected = expanded && i === active;
+      const cardWidth = expanded ? (selected ? mainWidth : thumbWidth) : compositionWidth * coverScale[i];
+      const x = expanded ? (selected ? center - cardWidth / 2 : navLeft + i * (thumbWidth + thumbGap)) : compositionCenter - cardWidth / 2 + coverX[i] * compositionWidth;
+      const y = expanded ? (selected ? mainTop : navTop + 28) : mainTop + coverY[i] * (mobile ? .64 : 1);
+      slide.style.left = `${x}px`;
+      slide.style.top = `${y}px`;
+      slide.style.width = `${cardWidth}px`;
+      slide.style.transform = `rotate(${expanded ? 0 : coverAngle[i]}deg)`;
+      slide.style.opacity = expanded ? (selected ? '1' : '0') : (i === 0 ? '1' : '.92');
+      slide.style.zIndex = selected || (!expanded && i === 0) ? '8' : String(7 - i);
+      slide.classList.toggle('is-active', selected);
+      slide.inert = !selected;
+    });
+    const baseHeight = mobile ? mainTop + mainHeight + 52 : Math.max(548, mainTop + mainHeight + 50);
+    stage.style.height = `${expanded ? Math.max(baseHeight, navTop + selectors.offsetHeight + 28) : baseHeight}px`;
+    deckOpen.style.left = mobile ? '0' : '43%';
+    deckOpen.style.top = `${mobile ? mainTop - 15 : 0}px`;
+    deckOpen.style.width = mobile ? '100%' : '57%';
+    deckOpen.style.height = `${(mobile ? 0 : mainTop) + mainHeight + 40}px`;
+  };
+  const update = (animate = false) => {
+    cover.classList.toggle('is-expanded', expanded);
+    close.hidden = !expanded;
+    close.setAttribute('aria-expanded', String(expanded));
+    deckOpen.hidden = expanded;
+    selectors.hidden = !expanded;
+    eyebrow.textContent = expanded ? `${String(active + 1).padStart(2, '0')} / ${pages[active][0]}` : 'A day on the mountain';
+    title.innerHTML = (expanded ? pages[active][1] : 'From first lift<br>to last frame.').replace('<br>', '<span class="slopeframe-title-break"> </span>');
+    description.textContent = expanded ? pages[active][2] : 'Find your people, your photos, and a day worth keeping.';
+    actionLabel.textContent = expanded ? 'View full screen' : 'Explore the experience';
+    count.textContent = `${String(active + 1).padStart(2, '0')} / 06`;
+    previousScreen.disabled = active === 0;
+    nextScreen.disabled = active === slides.length - 1;
+    tabs.forEach((tab, i) => tab.setAttribute('aria-pressed', String(i === active)));
+    layout();
+    if (expanded && selectorTrack.scrollWidth > selectorTrack.clientWidth + 2) {
+      selectorTrack.scrollTo({ left: tabs[active].offsetLeft - tabs[0].offsetLeft + tabs[active].offsetWidth / 2 - selectorTrack.clientWidth / 2, behavior: reduceMotion ? 'instant' : 'smooth' });
+    }
+    if (animate && !reduceMotion) {
+      [eyebrow, title, description].forEach((node) => {
+        node.getAnimations().forEach((animation) => animation.cancel());
+        node.animate([{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)' });
+      });
+    }
+  };
+  const clearHoverTimers = () => {
+    clearTimeout(enterTimer);
+    clearTimeout(leaveTimer);
+    clearTimeout(selectionTimer);
+  };
+  const collapse = () => {
+    clearHoverTimers();
+    const restoreFocus = slides.some((slide) => slide.contains(document.activeElement)) || selectors.contains(document.activeElement) || document.activeElement === close;
+    pinned = false;
+    expanded = false;
+    screenGesture = null;
+    update(true);
+    if (restoreFocus) action.focus({ preventScroll: true });
+  };
+  const openOverview = (pin = true) => {
+    clearHoverTimers();
+    pinned = pinned || pin;
+    if (expanded) return;
+    expanded = true;
+    update(true);
+    if (pin && stage.clientWidth < 680) cover.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'instant' : 'smooth' });
+  };
+  const scheduleCollapse = () => {
+    clearTimeout(leaveTimer);
+    if (!expanded || pinned || pointerInside || mediaViewer?.open) return;
+    leaveTimer = setTimeout(() => {
+      if (!pinned && !pointerInside && !mediaViewer?.open) collapse();
+    }, 240);
+  };
+  const openDetail = (returnFocus) => {
+    clearHoverTimers();
+    ownsViewer = true;
+    openMediaViewer(buttons[active]);
+    mediaReturnFocus = returnFocus;
+  };
   cover.addEventListener('pointerenter', (event) => {
-    if (finePointer.matches && event.pointerType === 'mouse') playSlopePreview(cover);
+    if (!finePointer.matches || event.pointerType === 'touch') return;
+    pointerInside = true;
+    clearTimeout(leaveTimer);
+    if (expanded || suppressHoverUntilLeave || mediaViewer?.open) return;
+    enterTimer = setTimeout(() => {
+      if (pointerInside && !suppressHoverUntilLeave && !mediaViewer?.open) openOverview(false);
+    }, 130);
   });
-  cover.addEventListener('focus', () => {
-    if (cover.matches(':focus-visible')) playSlopePreview(cover);
+  cover.addEventListener('pointerleave', (event) => {
+    if (event.pointerType === 'touch') return;
+    pointerInside = false;
+    suppressHoverUntilLeave = false;
+    clearTimeout(enterTimer);
+    clearTimeout(selectionTimer);
+    scheduleCollapse();
   });
-  cover.addEventListener('animationend', (event) => {
-    if (event.target.classList.contains('slopeframe-device--home')) cover.classList.remove('is-unfolding');
+  // Actual keyboard interaction pins the view; programmatic focus restoration does not.
+  cover.addEventListener('keydown', (event) => {
+    if (expanded && ['Tab','ArrowLeft','ArrowRight','Home','End'].includes(event.key)) {
+      pinned = true;
+      clearHoverTimers();
+    }
   });
+  deckOpen.addEventListener('click', () => { openOverview(); action.focus({ preventScroll: true }); });
+  action.addEventListener('click', () => {
+    if (!expanded) { openOverview(); return; }
+    openDetail(action);
+  });
+  close.addEventListener('click', () => {
+    suppressHoverUntilLeave = true;
+    collapse();
+  });
+  mobileClose.addEventListener('click', () => {
+    suppressHoverUntilLeave = true;
+    collapse();
+  });
+  const stepScreen = (delta) => {
+    clearHoverTimers();
+    pinned = true;
+    const next = Math.max(0, Math.min(slides.length - 1, active + delta));
+    if (next !== active) { active = next; update(true); }
+  };
+  previousScreen.addEventListener('click', () => stepScreen(-1));
+  nextScreen.addEventListener('click', () => stepScreen(1));
+  buttons.forEach((button) => {
+    button.addEventListener('pointerdown', (event) => {
+      if (!event.isPrimary) { screenGesture = null; return; }
+      if (!expanded || button !== buttons[active] || event.button !== 0 || (event.pointerType === 'mouse' && stage.clientWidth >= 680)) return;
+      screenGesture = { id: event.pointerId, x: event.clientX, y: event.clientY, index: active };
+      button.setPointerCapture(event.pointerId);
+    });
+    button.addEventListener('pointerup', (event) => {
+      const gesture = screenGesture;
+      screenGesture = null;
+      if (!gesture || gesture.id !== event.pointerId || gesture.index !== active) return;
+      const dx = event.clientX - gesture.x;
+      const dy = event.clientY - gesture.y;
+      if (Math.abs(dx) > 10 || Math.abs(dy) > 10) suppressImageClickUntil = performance.now() + 450;
+      if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.3) stepScreen(dx < 0 ? 1 : -1);
+    });
+    button.addEventListener('pointercancel', () => { screenGesture = null; });
+    button.addEventListener('lostpointercapture', () => { screenGesture = null; });
+  });
+  stage.addEventListener('click', (event) => {
+    if (event.detail !== 0 && event.target.closest('[data-preview-image]') && performance.now() < suppressImageClickUntil) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+  preventDragClick(selectorTrack);
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('pointerenter' , (event) => {
+      if (!finePointer.matches || event.pointerType === 'touch' || !expanded || mediaViewer?.open) return;
+      clearTimeout(selectionTimer);
+      selectionTimer = setTimeout(() => {
+        if (expanded && pointerInside && !mediaViewer?.open && active !== i) { active = i; update(true); }
+      }, 90);
+    });
+    tab.addEventListener('pointerleave', () => clearTimeout(selectionTimer));
+    tab.addEventListener('click', () => {
+      clearHoverTimers();
+      pinned = true;
+      if (active !== i) { active = i; update(true); }
+    });
+  });
+  selectors.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    const focused = tabs.indexOf(event.target.closest('[data-screen-select]'));
+    const origin = focused < 0 ? active : focused;
+    active = event.key === 'Home' ? 0 : event.key === 'End' ? 5 : (origin + (event.key === 'ArrowRight' ? 1 : 5)) % 6;
+    update(true);
+    tabs[active].focus({ preventScroll: true });
+  });
+  stage.addEventListener('click', (event) => {
+    const image = event.target.closest('[data-preview-image]');
+    if (expanded && image === buttons[active]) openDetail(image);
+  });
+  mediaViewer?.addEventListener('close', () => {
+    if (!ownsViewer) return;
+    ownsViewer = false;
+    requestAnimationFrame(() => {
+      // The modal hides pointer transitions; recheck after its focus restoration finishes.
+      pointerInside = finePointer.matches && cover.matches(':hover');
+      scheduleCollapse();
+    });
+  });
+  new ResizeObserver(() => {
+    if (stage.clientWidth === lastWidth) return;
+    lastWidth = stage.clientWidth;
+    layout();
+  }).observe(stage);
+  window.addEventListener('resize', frameLatest(layout), { passive: true });
+  update();
+  document.fonts?.ready.then(layout);
 });
 
 function prepareOptionalVideos(root) {
@@ -554,6 +807,93 @@ projectRows.forEach((row) => {
   });
 });
 
+// Viewer zoom is independent of the homepage disclosure and gallery position.
+let mediaZoom = 1;
+let mediaZoomMode = 'fit';
+let mediaImageSize = { width: 1, height: 1 };
+let mediaSwipe = null;
+let mediaPan = null;
+const mediaTouchPointers = new Set();
+
+function mediaFitScale() {
+  if (!mediaViewport) return 1;
+  return Math.min(
+    Math.max(1, mediaViewport.clientWidth - 32) / mediaImageSize.width,
+    Math.max(1, mediaViewport.clientHeight - 32) / mediaImageSize.height,
+    1
+  );
+}
+
+function mediaMaximumZoom() {
+  return Math.max(4, 1 / Math.max(.0001, mediaFitScale()));
+}
+
+function clearMediaGesture() {
+  if (mediaPan && mediaViewport?.hasPointerCapture(mediaPan.id)) mediaViewport.releasePointerCapture(mediaPan.id);
+  mediaPan = null;
+  mediaSwipe = null;
+  mediaTouchPointers.clear();
+  mediaViewport?.classList.remove('is-dragging');
+}
+
+function paintMediaZoom() {
+  if (!mediaViewerImage || !mediaViewport) return;
+  const fit = mediaFitScale();
+  if (mediaZoomMode === 'fit') mediaZoom = 1;
+  else if (mediaZoomMode === 'actual') mediaZoom = 1 / Math.max(.0001, fit);
+  mediaZoom = Math.max(1, Math.min(mediaMaximumZoom(), mediaZoom));
+  const isZoomed = mediaZoom > 1.001;
+  mediaViewer.classList.toggle('is-zoomed', isZoomed);
+  mediaZoomStatus.textContent = isZoomed ? `${Math.round(fit * mediaZoom * 100)}%` : 'Fit';
+  mediaZoomOut.disabled = !isZoomed;
+  mediaZoomIn.disabled = mediaZoom >= mediaMaximumZoom() - .001;
+  mediaFitButton.setAttribute('aria-pressed', String(!isZoomed));
+  mediaActualButton.setAttribute('aria-pressed', String(Math.abs(fit * mediaZoom - 1) < .005));
+  if (!mediaViewer.open || mediaViewport.clientWidth < 1 || mediaViewport.clientHeight < 1) return;
+  mediaViewerImage.style.width = `${mediaImageSize.width * fit * mediaZoom}px`;
+  mediaViewerImage.style.height = `${mediaImageSize.height * fit * mediaZoom}px`;
+}
+
+function setMediaZoom(next, mode = 'custom', anchor = null) {
+  if (!mediaViewer?.open || !mediaViewport || !mediaViewerImage) return;
+  const before = mediaViewerImage.getBoundingClientRect();
+  const viewport = mediaViewport.getBoundingClientRect();
+  const x = anchor?.x ?? mediaViewport.clientWidth / 2;
+  const y = anchor?.y ?? mediaViewport.clientHeight / 2;
+  const imageX = before.width ? Math.max(0, Math.min(1, (viewport.left + x - before.left) / before.width)) : .5;
+  const imageY = before.height ? Math.max(0, Math.min(1, (viewport.top + y - before.top) / before.height)) : .5;
+  mediaZoom = Math.max(1, Math.min(mediaMaximumZoom(), next));
+  mediaZoomMode = mediaZoom <= 1.001 && mode !== 'actual' ? 'fit' : mode;
+  clearMediaGesture();
+  paintMediaZoom();
+  if (mediaZoom <= 1.001) {
+    mediaViewport.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+    return;
+  }
+  const after = mediaViewerImage.getBoundingClientRect();
+  mediaViewport.scrollTo({
+    left: mediaViewport.scrollLeft + after.left - viewport.left + imageX * after.width - x,
+    top: mediaViewport.scrollTop + after.top - viewport.top + imageY * after.height - y,
+    behavior: 'instant'
+  });
+}
+
+function resetMediaZoom() {
+  clearMediaGesture();
+  mediaZoom = 1;
+  mediaZoomMode = 'fit';
+  mediaViewport?.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+  paintMediaZoom();
+}
+
+function zoomMediaIn() {
+  setMediaZoom(mediaZoom <= 1.001 ? 2 : mediaZoom * 1.5);
+}
+
+function zoomMediaOut() {
+  setMediaZoom(mediaZoom / 1.5);
+}
+
 function closeMediaViewer() {
   dismissDialog(mediaViewer);
 }
@@ -565,11 +905,16 @@ function renderMedia(index) {
   const trigger = mediaCards[mediaIndex];
   const sourceImage = trigger?.querySelector('img');
   if (!mediaViewer || !mediaViewerImage || !sourceImage) return;
+  mediaImageSize = {
+    width: sourceImage.naturalWidth || Number(sourceImage.getAttribute('width')) || 1,
+    height: sourceImage.naturalHeight || Number(sourceImage.getAttribute('height')) || 1
+  };
   mediaViewerImage.src = sourceImage.currentSrc || sourceImage.src;
   mediaViewerImage.alt = sourceImage.alt;
+  resetMediaZoom();
   if (mediaViewerCaption) {
     const caption = trigger.querySelector('.case-media-card__caption') || trigger.closest('figure')?.querySelector('figcaption');
-    mediaViewerCaption.textContent = caption?.innerText.replace(/\s+/g, ' ').trim() || sourceImage.alt;
+    mediaViewerCaption.textContent = trigger.dataset.mediaCaption || caption?.innerText.replace(/\s+/g, ' ').trim() || sourceImage.alt;
   }
   mediaViewer.querySelector('[data-media-prev]').disabled = mediaIndex === 0;
   mediaViewer.querySelector('[data-media-next]').disabled = mediaIndex === mediaCards.length - 1;
@@ -588,32 +933,100 @@ function openMediaViewer(trigger) {
   if (!mediaViewer || mediaViewer.open) return;
   mediaReturnFocus = trigger;
   mediaReturnScroll = projectShell?.scrollTop || 0;
-  const gallery = trigger.closest('.case-media-gallery, .case-phone-rail');
-  mediaCards = gallery ? [...gallery.querySelectorAll('[data-case-image]')] : [trigger];
+  const gallery = trigger.closest('.case-media-gallery, .case-phone-rail, [data-preview-gallery]');
+  mediaCards = gallery ? [...gallery.querySelectorAll('[data-case-image]')].filter((card) => !card.closest('[hidden]')) : [trigger];
   renderMedia(mediaCards.indexOf(trigger));
+  mediaViewer.querySelector('[data-media-close-label]').textContent = projectDialog?.open ? 'Back to note' : 'Back to preview';
+  lockScroll('media');
   showDialog(mediaViewer);
+  requestAnimationFrame(() => { if (mediaViewer.open) paintMediaZoom(); });
 }
 
 mediaViewer?.querySelector('[data-media-prev]')?.addEventListener('click', () => renderMedia(mediaIndex - 1));
 mediaViewer?.querySelector('[data-media-next]')?.addEventListener('click', () => renderMedia(mediaIndex + 1));
+mediaZoomIn?.addEventListener('click', zoomMediaIn);
+mediaZoomOut?.addEventListener('click', zoomMediaOut);
+mediaFitButton?.addEventListener('click', () => setMediaZoom(1, 'fit'));
+mediaActualButton?.addEventListener('click', () => setMediaZoom(1 / Math.max(.0001, mediaFitScale()), 'actual'));
+mediaViewerImage?.addEventListener('load', () => {
+  if (mediaViewerImage.naturalWidth && mediaViewerImage.naturalHeight) {
+    mediaImageSize = { width: mediaViewerImage.naturalWidth, height: mediaViewerImage.naturalHeight };
+    paintMediaZoom();
+  }
+});
 mediaViewer?.addEventListener('keydown', (event) => {
-  if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  if (event.metaKey || event.ctrlKey || event.altKey) return;
+  if (event.key === '+' || event.key === '=') { event.preventDefault(); zoomMediaIn(); return; }
+  if (event.key === '-' || event.key === '−') { event.preventDefault(); zoomMediaOut(); return; }
+  if (event.key === '0') { event.preventDefault(); setMediaZoom(1, 'fit'); return; }
+  if (event.key === '1') { event.preventDefault(); setMediaZoom(1 / Math.max(.0001, mediaFitScale()), 'actual'); return; }
+  if (mediaZoom > 1.001 && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+    event.preventDefault();
+    const step = event.shiftKey ? 200 : 80;
+    mediaViewport.scrollBy({
+      left: event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0,
+      top: event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0,
+      behavior: 'instant'
+    });
+    return;
+  }
+  if (mediaZoom <= 1.001 && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+    event.preventDefault();
+    renderMedia(mediaIndex + (event.key === 'ArrowRight' ? 1 : -1));
+  }
+});
+mediaViewport?.addEventListener('pointerdown', (event) => {
+  if (event.pointerType !== 'mouse') {
+    mediaTouchPointers.add(event.pointerId);
+    if (mediaTouchPointers.size > 1) { mediaSwipe = null; return; }
+    if (mediaZoom <= 1.001 && event.isPrimary) mediaSwipe = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    return;
+  }
+  if (mediaZoom <= 1.001 || event.button !== 0) return;
+  mediaPan = { id: event.pointerId, x: event.clientX, y: event.clientY, left: mediaViewport.scrollLeft, top: mediaViewport.scrollTop };
+  mediaViewport.setPointerCapture(event.pointerId);
+  mediaViewport.classList.add('is-dragging');
   event.preventDefault();
-  renderMedia(mediaIndex + (event.key === 'ArrowRight' ? 1 : -1));
 });
-let mediaSwipe = null;
-mediaViewerImage?.addEventListener('pointerdown', (event) => {
-  if (event.pointerType === 'mouse' || !event.isPrimary) return;
-  mediaSwipe = { x: event.clientX, y: event.clientY };
+mediaViewport?.addEventListener('pointermove', (event) => {
+  if (!mediaPan || event.pointerId !== mediaPan.id) return;
+  mediaViewport.scrollLeft = mediaPan.left - (event.clientX - mediaPan.x);
+  mediaViewport.scrollTop = mediaPan.top - (event.clientY - mediaPan.y);
 });
-mediaViewerImage?.addEventListener('pointerup', (event) => {
-  if (!mediaSwipe) return;
-  const dx = event.clientX - mediaSwipe.x;
-  const dy = event.clientY - mediaSwipe.y;
+mediaViewport?.addEventListener('pointerup', (event) => {
+  if (mediaPan?.id === event.pointerId) { clearMediaGesture(); return; }
+  const singleTouch = mediaTouchPointers.size === 1;
+  mediaTouchPointers.delete(event.pointerId);
+  const gesture = mediaSwipe;
   mediaSwipe = null;
+  if (mediaZoom > 1.001 || !singleTouch || !gesture || gesture.id !== event.pointerId) return;
+  const dx = event.clientX - gesture.x;
+  const dy = event.clientY - gesture.y;
   if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) renderMedia(mediaIndex + (dx < 0 ? 1 : -1));
 });
-mediaViewerImage?.addEventListener('pointercancel', () => { mediaSwipe = null; });
+mediaViewport?.addEventListener('pointercancel', clearMediaGesture);
+mediaViewport?.addEventListener('lostpointercapture', () => {
+  mediaPan = null;
+  mediaViewport.classList.remove('is-dragging');
+});
+mediaViewerImage?.addEventListener('dragstart', (event) => event.preventDefault());
+mediaViewerImage?.addEventListener('dblclick', (event) => {
+  event.preventDefault();
+  const bounds = mediaViewport.getBoundingClientRect();
+  setMediaZoom(mediaZoom > 1.001 ? 1 : Math.max(2, 1 / Math.max(.0001, mediaFitScale())), 'custom', {
+    x: event.clientX - bounds.left, y: event.clientY - bounds.top
+  });
+});
+if (mediaViewport && 'ResizeObserver' in window) {
+  let zoomResizeFrame = 0;
+  const zoomObserver = new ResizeObserver(() => {
+    cancelAnimationFrame(zoomResizeFrame);
+    zoomResizeFrame = requestAnimationFrame(() => {
+      if (mediaViewer.open) setMediaZoom(mediaZoom, mediaZoomMode);
+    });
+  });
+  zoomObserver.observe(mediaViewport);
+}
 
 function closeProjectDialog() {
   dismissDialog(projectDialog);
@@ -714,7 +1127,7 @@ projectOpeners.forEach((opener) => {
 });
 
 function projectImageSection() {
-  return projectDialogContent?.querySelector('.case-rail-controls:not([hidden]), .case-media-gallery, .case-cinema');
+  return projectDialogContent?.querySelector('.case-rail-controls:not([hidden]), .case-phone-rail, .case-media-gallery, .case-cinema');
 }
 
 function updateProjectJump() {
@@ -760,12 +1173,14 @@ mediaViewer?.addEventListener('click', (event) => {
 });
 
 mediaViewer?.addEventListener('close', () => {
+  resetMediaZoom();
   if (mediaViewerImage) {
     mediaViewerImage.removeAttribute('src');
     mediaViewerImage.alt = '';
   }
+  unlockScroll('media');
   if (mediaReturnFocus instanceof HTMLElement) mediaReturnFocus.focus({ preventScroll: true });
-  projectShell?.scrollTo({ top: mediaReturnScroll, behavior: 'instant' });
+  if (projectDialog?.open) projectShell?.scrollTo({ top: mediaReturnScroll, behavior: 'instant' });
   mediaReturnFocus = null;
   mediaCards = [];
 });
