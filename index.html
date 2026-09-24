@@ -28,7 +28,7 @@
       href="assets/images/haoze-portrait-marketer-cutout.jpg"
       fetchpriority="high"
     />
-  <link rel="stylesheet" href="styles.css?v=20260923-mobile-preview-v1" />
+  <link rel="stylesheet" href="styles.css?v=20260923-fc25-playback-v1" />
     <script>document.documentElement.classList.add('js');</script>
   </head>
 
@@ -313,24 +313,31 @@
             <div
               class="featured-visual gbh-gallery"
               tabindex="0"
-              aria-label="GBH audience research slides. Use the arrow keys, buttons, or swipe to browse."
+              aria-label="GBH research gallery. Swipe or use the arrow keys to browse. Select a slide to enlarge."
               data-project-gallery
             >
               <div class="gallery-track" data-gallery-track>
                 <figure class="gallery-slide">
-                  <img src="assets/images/gbh-agenda.jpg" alt="GBH Kids audience research agenda slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  <button class="gallery-image" type="button" data-case-image aria-label="Enlarge GBH Kids audience research agenda slide">
+                    <img src="assets/images/gbh-agenda.jpg" alt="GBH Kids audience research agenda slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  </button>
                   <figcaption>Research structure</figcaption>
                 </figure>
                 <figure class="gallery-slide">
-                  <img src="assets/images/gbh-literature-review.jpg" alt="GBH Kids audience research literature review slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  <button class="gallery-image" type="button" data-case-image aria-label="Enlarge GBH Kids audience research literature review slide">
+                    <img src="assets/images/gbh-literature-review.jpg" alt="GBH Kids audience research literature review slide" width="1800" height="1007" loading="lazy" draggable="false" />
+                  </button>
                   <figcaption>Literature review</figcaption>
                 </figure>
                 <figure class="gallery-slide">
-                  <img src="assets/images/gbh-framework.jpg" alt="GBH Kids audience research theoretical framework slide" width="1800" height="1011" loading="lazy" draggable="false" />
+                  <button class="gallery-image" type="button" data-case-image aria-label="Enlarge GBH Kids audience research theoretical framework slide">
+                    <img src="assets/images/gbh-framework.jpg" alt="GBH Kids audience research theoretical framework slide" width="1800" height="1011" loading="lazy" draggable="false" />
+                  </button>
                   <figcaption>Theoretical framework</figcaption>
                 </figure>
               </div>
               <div class="gallery-controls">
+                <button class="gallery-enlarge" type="button" aria-label="Enlarge current GBH slide" title="Enlarge slide" data-gallery-enlarge><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M7.5 10.5h6m-3-3v6"/></svg></button>
                 <button type="button" aria-label="Previous GBH slide" data-gallery-prev>←</button>
                 <span data-gallery-status aria-live="polite">01 / 03</span>
                 <button type="button" aria-label="Next GBH slide" data-gallery-next>→</button>
@@ -414,7 +421,7 @@
               <button class="project-row__preview-inner" type="button" data-project-open="fc25" aria-label="Read FC25 Teaser project note">
                 <span class="project-row__preview-media">
                   <span class="teaser-poster"><span>Unofficial web concept</span><strong>FC25</strong><em>A moment before kickoff.</em></span>
-                  <video src="assets/media/fc25-teaser.mov" muted loop playsinline preload="none" data-optional-video></video>
+                  <video src="assets/media/fc25-teaser.mp4" muted loop playsinline preload="none" data-optional-video></video>
                 </span>
                 <span class="project-row__preview-caption"><b>Motion study</b><i>Read project note ↗</i></span>
               </button>
@@ -647,7 +654,7 @@
             <h2>FC25 Teaser</h2>
             <div><strong>A launch page should create a feeling before it explains everything.</strong><span>An unofficial teaser-site concept using cinematic pacing and progressive disclosure to warm up an audience before release.</span></div>
           </header>
-          <figure class="case-cinema case-cinema--video"><div class="optional-video"><div class="teaser-poster"><span>Unofficial web concept</span><strong>FC25</strong><em>A moment before kickoff.</em><small data-video-message>Trailer preview is currently unavailable.</small></div><video src="assets/media/fc25-teaser.mov" controls muted playsinline preload="metadata" aria-label="FC25 teaser concept video" data-optional-video></video></div><figcaption>Trailer-led experience / launch concept</figcaption></figure>
+          <figure class="case-cinema case-cinema--video"><div class="optional-video"><div class="teaser-poster"><span>Unofficial web concept</span><strong>FC25</strong><em>A moment before kickoff.</em><small data-video-message>Trailer preview is currently unavailable.</small></div><video src="assets/media/fc25-teaser.mp4" controls muted playsinline preload="metadata" aria-label="FC25 teaser concept video" data-optional-video></video></div><figcaption>Trailer-led experience / launch concept</figcaption></figure>
           <dl class="case-note__facts">
             <div><dt>Role</dt><dd>Concept, visual direction, interaction, and motion</dd></div>
             <div><dt>Experience</dt><dd>Trailer-first entry, timed reveals, and restrained launch information</dd></div>
@@ -770,9 +777,9 @@
     <footer class="site-footer">
       <a class="wordmark wordmark--footer" href="#top">HN<span>.</span></a>
       <p>© <span data-year>2026</span> Haoze Ni</p>
-      <a href="#top">Back to top ↑</a>
+      <a class="back-to-top" href="#top">Back to top <span aria-hidden="true">↑</span></a>
     </footer>
 
-  <script src="script.js?v=20260923-mobile-preview-v1"></script>
+  <script src="script.js?v=20260923-fc25-playback-v1"></script>
   </body>
 </html>

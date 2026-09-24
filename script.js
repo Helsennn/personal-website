@@ -282,6 +282,7 @@ projectCovers.forEach((cover) => {
 projectGalleries.forEach((gallery) => {
   const track = gallery.querySelector('[data-gallery-track]');
   const slides = [...gallery.querySelectorAll('.gallery-slide')];
+  const images = slides.map((slide) => slide.querySelector('[data-case-image]'));
   const previousButton = gallery.querySelector('[data-gallery-prev]');
   const nextButton = gallery.querySelector('[data-gallery-next]');
   const status = gallery.querySelector('[data-gallery-status]');
@@ -289,40 +290,38 @@ projectGalleries.forEach((gallery) => {
   let targetIndex = null;
   let scrollFrame;
   let settleTimer;
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragStartScroll = 0;
+  let drag = null;
+  let previousWidth = 0;
 
   if (!track || slides.length === 0) return;
 
   const updateStatus = () => {
     if (status) status.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    images.forEach((image, index) => { if (image) image.tabIndex = index === activeIndex ? 0 : -1; });
+    if (!mediaViewer?.open && images.includes(document.activeElement) && document.activeElement !== images[activeIndex]) {
+      images[activeIndex]?.focus({ preventScroll: true });
+    }
   };
-
-  const goToSlide = (index, behavior = reduceMotion ? 'auto' : 'smooth') => {
+  const goToSlide = (index, behavior = reduceMotion ? 'instant' : 'smooth') => {
     activeIndex = (index + slides.length) % slides.length;
     targetIndex = activeIndex;
     track.scrollTo({ left: activeIndex * track.clientWidth, behavior });
     updateStatus();
   };
-
+  gallery.querySelector('[data-gallery-enlarge]')?.addEventListener('click', () => openMediaViewer(images[activeIndex]));
   previousButton?.addEventListener('click', () => goToSlide(activeIndex - 1));
   nextButton?.addEventListener('click', () => goToSlide(activeIndex + 1));
-
   gallery.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      goToSlide(activeIndex - 1);
-    }
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      goToSlide(activeIndex + 1);
-    }
+    if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey) return;
+    event.preventDefault();
+    const focusedIndex = images.indexOf(event.target.closest('[data-case-image]'));
+    goToSlide((focusedIndex >= 0 ? focusedIndex : activeIndex) + (event.key === 'ArrowRight' ? 1 : -1));
+    if (focusedIndex >= 0) images[activeIndex]?.focus({ preventScroll: true });
   });
 
   track.addEventListener('scroll', () => {
-    window.cancelAnimationFrame(scrollFrame);
-    scrollFrame = window.requestAnimationFrame(() => {
+    cancelAnimationFrame(scrollFrame);
+    scrollFrame = requestAnimationFrame(() => {
       const nextIndex = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
       if (targetIndex === null && nextIndex !== activeIndex) {
         activeIndex = Math.min(slides.length - 1, Math.max(0, nextIndex));
@@ -332,40 +331,57 @@ projectGalleries.forEach((gallery) => {
     clearTimeout(settleTimer);
     settleTimer = setTimeout(() => {
       targetIndex = null;
-      activeIndex = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      activeIndex = Math.min(slides.length - 1, Math.max(0, Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));
       updateStatus();
     }, 140);
   }, { passive: true });
 
-  if (finePointer.matches) {
-    track.addEventListener('pointerdown', (event) => {
-      if (event.button !== 0 || event.pointerType !== 'mouse') return;
-      targetIndex = null;
-      isDragging = true;
-      dragStartX = event.clientX;
-      dragStartScroll = track.scrollLeft;
+  preventDragClick(track);
+  track.addEventListener('pointerdown', (event) => {
+    targetIndex = null;
+    if (event.button !== 0 || event.pointerType !== 'mouse' || !event.isPrimary) return;
+    drag = { id: event.pointerId, x: event.clientX, left: track.scrollLeft, moved: false };
+  });
+  track.addEventListener('pointermove', (event) => {
+    if (!drag || drag.id !== event.pointerId) return;
+    const distance = event.clientX - drag.x;
+    if (!drag.moved && Math.abs(distance) <= 10) return;
+    if (!drag.moved) {
+      drag.moved = true;
       track.classList.add('is-dragging');
       track.setPointerCapture(event.pointerId);
-    });
-
-    track.addEventListener('pointermove', (event) => {
-      if (!isDragging) return;
-      track.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
-    });
-
-    const finishDrag = (event) => {
-      if (!isDragging) return;
-      isDragging = false;
-      track.classList.remove('is-dragging');
-      if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
-      goToSlide(Math.round(track.scrollLeft / Math.max(1, track.clientWidth)));
-    };
-
-    track.addEventListener('pointerup', finishDrag);
-    track.addEventListener('pointercancel', finishDrag);
-    track.addEventListener('dragstart', (event) => event.preventDefault());
-  }
-
+    }
+    track.scrollLeft = drag.left - distance;
+  });
+  const finishDrag = (event) => {
+    if (!drag || drag.id !== event.pointerId) return;
+    const moved = drag.moved;
+    drag = null;
+    track.classList.remove('is-dragging');
+    if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
+    if (moved) goToSlide(Math.round(track.scrollLeft / Math.max(1, track.clientWidth)));
+  };
+  track.addEventListener('pointerup', finishDrag);
+  track.addEventListener('pointercancel', finishDrag);
+  track.addEventListener('lostpointercapture', finishDrag);
+  track.addEventListener('pointerleave', (event) => { if (drag && !drag.moved) finishDrag(event); });
+  track.addEventListener('dragstart', (event) => event.preventDefault());
+  track.addEventListener('click', (event) => {
+    const image = event.target.closest('[data-case-image]');
+    if (image instanceof HTMLButtonElement) openMediaViewer(image);
+  });
+  mediaViewer?.addEventListener('close', () => {
+    if (!gallery.contains(mediaReturnFocus)) return;
+    const viewed = images.indexOf(mediaCards[mediaIndex]);
+    if (viewed < 0) return;
+    goToSlide(viewed, 'instant');
+    mediaReturnFocus = images[viewed];
+  });
+  new ResizeObserver(() => {
+    if (track.clientWidth === previousWidth) return;
+    previousWidth = track.clientWidth;
+    goToSlide(activeIndex, 'instant');
+  }).observe(track);
   updateStatus();
 });
 
@@ -463,7 +479,7 @@ function setProjectPreviewActive(opener, active) {
   opener?.classList.toggle('is-previewing', active);
   opener?.querySelector('[data-project-preview]')?.setAttribute('aria-expanded', String(active));
   const indicator = opener?.querySelector('.project-row__arrow');
-  if (indicator) indicator.textContent = active ? '−' : '+';
+  if (indicator) indicator.textContent = finePointer.matches && window.innerWidth >= 920 ? '↗' : active ? '−' : '+';
   const panel = opener?.querySelector('.project-row__preview');
   if (panel) panel.inert = !active;
   const previewVideo = opener?.querySelector('.project-row__preview video');
@@ -745,8 +761,24 @@ document.querySelectorAll('.slopeframe-preview').forEach((cover) => {
 
 function prepareOptionalVideos(root) {
   root.querySelectorAll('[data-optional-video]').forEach((video) => {
-    video.addEventListener('loadeddata', () => video.classList.add('is-ready'), { once: true });
-    video.addEventListener('error', () => video.remove(), { once: true });
+    const poster = video.parentElement.querySelector('.teaser-poster');
+    const message = poster?.querySelector('[data-video-message]');
+    if (message) message.hidden = true;
+    const ready = () => {
+      video.classList.add('is-ready');
+      if (poster) poster.hidden = true;
+    };
+    const failed = () => {
+      if (poster) poster.hidden = false;
+      if (message) message.hidden = false;
+      video.remove();
+    };
+    video.addEventListener('loadeddata', ready, { once: true });
+    // Controls must remain available when data-saving modes load metadata only.
+    if (video.controls) video.addEventListener('loadedmetadata', ready, { once: true });
+    video.addEventListener('error', failed, { once: true });
+    if (video.error) failed();
+    else if (video.readyState >= 2 || (video.controls && video.readyState >= 1)) ready();
   });
 }
 prepareOptionalVideos(document);
@@ -755,6 +787,10 @@ const updatePreviewHints = () => {
   const isTouch = touchFirstMedia.matches || window.innerWidth < 920;
   const hint = document.querySelector('[data-project-hint]');
   if (hint) hint.textContent = isTouch ? 'Tap + to explore · Open the image to read' : 'Hover to preview · Click to read';
+  projectRows.forEach((row) => {
+    const indicator = row.querySelector('.project-row__arrow');
+    if (indicator) indicator.textContent = isTouch ? (row.classList.contains('is-previewing') ? '−' : '+') : '↗';
+  });
 };
 touchFirstMedia.addEventListener('change', updatePreviewHints);
 window.addEventListener('resize', frameLatest(updatePreviewHints), { passive: true });
@@ -780,8 +816,22 @@ if ('IntersectionObserver' in window) {
 projectRows.forEach((row) => {
   const summary = row.querySelector('[data-project-preview]');
   let pinned = false;
+  let keyboardEngaged = false;
+  let hoverTimer;
+  const collapse = () => {
+    clearTimeout(hoverTimer);
+    if (pinned || keyboardEngaged || projectDialog?.open) return;
+    // Restore focus before making a preview button inert.
+    if (row.querySelector('.project-row__preview')?.contains(document.activeElement)) summary.focus({ preventScroll: true });
+    setProjectPreviewActive(row, false);
+  };
   preventDragClick(summary);
+  row.addEventListener('pointerdown', () => { keyboardEngaged = false; }, { passive: true });
+  row.addEventListener('keydown', (event) => {
+    if (!['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) keyboardEngaged = true;
+  });
   summary.addEventListener('click', (event) => {
+    clearTimeout(hoverTimer);
     if (finePointer.matches && window.innerWidth >= 920 && event.detail !== 0) {
       pinned = false;
       setProjectPreviewActive(row, true);
@@ -793,17 +843,25 @@ projectRows.forEach((row) => {
   });
   row.addEventListener('pointerenter', (event) => {
     if (!finePointer.matches || window.innerWidth < 920 || event.pointerType !== 'mouse') return;
-    setProjectPreviewActive(row, true);
+    clearTimeout(hoverTimer);
+    keyboardEngaged = false;
+    if (!projectDialog?.open) hoverTimer = setTimeout(() => setProjectPreviewActive(row, true), 100);
   });
-
   row.addEventListener('pointerleave', () => {
-    if (!finePointer.matches || pinned || row.contains(document.activeElement) || projectDialog?.open) return;
-    setProjectPreviewActive(row, false);
+    clearTimeout(hoverTimer);
+    if (!finePointer.matches || window.innerWidth < 920) return;
+    hoverTimer = setTimeout(collapse, 180);
   });
   row.addEventListener('focusout', (event) => {
-    if (!pinned && !row.contains(event.relatedTarget) && !row.matches(':hover') && !projectDialog?.open) {
-      setProjectPreviewActive(row, false);
-    }
+    if (row.contains(event.relatedTarget) || projectDialog?.open) return;
+    keyboardEngaged = false;
+    if (!row.matches(':hover')) collapse();
+  });
+  projectDialog?.addEventListener('close', () => {
+    requestAnimationFrame(() => {
+      // Modal focus restoration is not a request to keep a hover preview open.
+      if (!row.matches(':hover')) collapse();
+    });
   });
 });
 
@@ -933,7 +991,7 @@ function openMediaViewer(trigger) {
   if (!mediaViewer || mediaViewer.open) return;
   mediaReturnFocus = trigger;
   mediaReturnScroll = projectShell?.scrollTop || 0;
-  const gallery = trigger.closest('.case-media-gallery, .case-phone-rail, [data-preview-gallery]');
+  const gallery = trigger.closest('.case-media-gallery, .case-phone-rail, [data-preview-gallery], [data-project-gallery]');
   mediaCards = gallery ? [...gallery.querySelectorAll('[data-case-image]')].filter((card) => !card.closest('[hidden]')) : [trigger];
   renderMedia(mediaCards.indexOf(trigger));
   mediaViewer.querySelector('[data-media-close-label]').textContent = projectDialog?.open ? 'Back to note' : 'Back to preview';
@@ -1078,9 +1136,16 @@ function setupProjectRails() {
     previous.addEventListener('click', () => go(-1));
     next.addEventListener('click', () => go(1));
     rail.addEventListener('keydown', (event) => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || toolbar.hidden) return;
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || toolbar.hidden || event.altKey || event.ctrlKey || event.metaKey) return;
       event.preventDefault();
+      const focusedIndex = slides.findIndex((slide) => slide === event.target || slide.contains(event.target));
+      if (focusedIndex >= 0) index = focusedIndex;
       go(event.key === 'ArrowRight' ? 1 : -1);
+      if (focusedIndex >= 0) {
+        const slide = slides[index];
+        const button = slide.matches('[data-case-image]') ? slide : slide.querySelector('[data-case-image]');
+        button?.focus({ preventScroll: true });
+      }
     });
     const paint = frameLatest(update);
     rail.addEventListener('scroll', () => {
@@ -1193,6 +1258,7 @@ projectDialog?.addEventListener('close', () => {
   projectDialogContent?.querySelectorAll('video').forEach((video) => video.pause());
   if (projectReturnFocus instanceof HTMLElement) projectReturnFocus.focus({ preventScroll: true });
   projectReturnFocus = null;
+  requestAnimationFrame(resumeVisiblePreviewVideos);
 });
 
 publicationDetails.forEach((details) => {
@@ -1328,9 +1394,18 @@ if ('IntersectionObserver' in window) {
   });
   ambientElements.forEach((element) => ambientObserver.observe(element));
 }
+function resumeVisiblePreviewVideos() {
+  if (document.hidden || reduceMotion || projectDialog?.open || mediaViewer?.open) return;
+  document.querySelectorAll('.project-row.is-previewing video').forEach((video) => {
+    const bounds = video.getBoundingClientRect();
+    if (bounds.bottom > 0 && bounds.top < window.innerHeight && bounds.height > 0) video.play().catch(() => {});
+  });
+}
+
 document.addEventListener('visibilitychange', () => {
   document.documentElement.classList.toggle('page-hidden', document.hidden);
   if (document.hidden) document.querySelectorAll('video').forEach((video) => video.pause());
+  else resumeVisiblePreviewVideos();
 });
 
 // Reveal individual reading units as they enter the viewport. A short stagger
